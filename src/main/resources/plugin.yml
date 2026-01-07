@@ -1,0 +1,48 @@
+name: SLclaim
+version: 1.12.3.3
+main: fr.mrbaguette07.SCS.SLclaim
+authors: [MrBaguette07]
+softdepend: [PlaceholderAPI, WorldGuard, Vault, BlueMap, floodgate, ItemsAdder]
+api-version: 1.18
+folia-supported: true
+commands:
+  claim:
+    description: Commande de base pour les claims
+    aliases: []
+    permission: scs.command.claim
+  claims:
+    description: Tous les claims
+    aliases: []
+    permission: scs.command.claims
+  unclaim:
+    description: Supprimer votre territoire
+    aliases: []
+    permission: scs.command.unclaim
+    default: true
+  scs:
+    description: Commandes administrateur
+    permission: scs.admin
+  protectedarea:
+    aliases: [parea,pa]
+    description: Commandes des zones protégées
+    permission: scs.admin
+    
+permissions:
+  scs.command.claim:
+    description: Commande de base pour les claims
+    default: true
+  scs.command.claim.*:
+    description: Commande de base pour les claims
+    default: true
+  scs.command.unclaim:
+    description: Supprimer votre territoire
+    default: true
+  scs.admin:
+    description: Commandes administrateur
+    default: op
+  scs.command.claims:
+    description: Interface des claims
+    default: true
+  scs.setting.*:
+    description: Permissions des paramètres
+    default: true

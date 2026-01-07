@@ -1,0 +1,126 @@
+# =====================================
+# SLclaim - Configuration Multi-Serveur
+# =====================================
+# Ce fichier configure le support multi-serveur utilisant Redis et MongoDB.
+# Activez-le pour synchroniser les claims entre plusieurs serveurs.
+
+# Activer/désactiver le mode multi-serveur
+enabled: false
+
+# Le nom de ce serveur (doit être unique par serveur)
+server-name: "server-1"
+
+# Le type de ce serveur :
+# - SURVIVAL: Fonctionnalités complètes - les joueurs peuvent créer, modifier et gérer les claims
+# - LOBBY: Fonctionnalités limitées - les joueurs peuvent voir et gérer les claims existants, mais ne peuvent pas en créer
+# - STANDALONE: Mode serveur unique traditionnel (synchronisation multi-serveur désactivée)
+server-type: SURVIVAL
+
+# Liste des serveurs dans le réseau
+servers:
+  # Serveurs survie - fonctionnalités complètes
+  survival:
+    - "survival-1"
+    - "survival-2"
+  # Serveurs lobby - fonctionnalités limitées (pas de création de claims)
+  lobby:
+    - "lobby-1"
+    - "hub"
+
+# =====================================
+# Configuration Redis
+# =====================================
+# Redis est utilisé pour la synchronisation en temps réel entre serveurs.
+# Les messages sont publiés/souscrits via le système pub/sub de Redis.
+
+redis:
+  # Nom d'hôte du serveur Redis
+  host: "localhost"
+  
+  # Port du serveur Redis
+  port: 6379
+  
+  # Mot de passe Redis (laisser vide si pas de mot de passe)
+  password: ""
+  
+  # Utiliser une connexion SSL/TLS
+  ssl: false
+  
+  # Numéro de base de données Redis (0-15)
+  database: 0
+  
+  # Nom du canal Redis pour la messagerie pub/sub
+  channel: "SLclaim"
+
+# =====================================
+# Configuration MongoDB
+# =====================================
+# MongoDB est utilisé comme base de données centrale pour stocker les données des claims.
+# Tous les serveurs lisent/écrivent dans cette base de données.
+
+mongodb:
+  # Chaîne de connexion MongoDB
+  # Exemples :
+  # - Local : mongodb://localhost:27017
+  # - Avec authentification : mongodb://utilisateur:motdepasse@localhost:27017
+  # - Atlas : mongodb+srv://utilisateur:motdepasse@cluster.mongodb.net
+  # - Replica set : mongodb://host1:27017,host2:27017,host3:27017/?replicaSet=monReplicaSet
+  connection-string: "mongodb://localhost:27017"
+  
+  # Nom de la base de données
+  database: "SLclaim"
+  
+  # Noms des collections
+  collections:
+    claims: "claims"
+    players: "players"
+
+# =====================================
+# Paramètres de synchronisation
+# =====================================
+
+sync:
+  # Fréquence de synchronisation avec MongoDB (en secondes)
+  # Mettre 0 pour désactiver la synchronisation périodique (uniquement basée sur les événements)
+  interval: 300
+  
+  # Synchroniser les claims au démarrage du serveur
+  sync-on-startup: true
+  
+  # Journaliser les événements de synchronisation dans la console
+  log-sync-events: true
+
+# =====================================
+# Paramètres spécifiques au type de serveur
+# =====================================
+
+# Paramètres pour les serveurs LOBBY
+lobby-settings:
+  # Autoriser les joueurs à voir leurs claims
+  allow-view-claims: true
+  
+  # Autoriser les joueurs à gérer les paramètres des claims (membres, permissions, etc.)
+  allow-manage-settings: true
+  
+  # Autoriser les joueurs à vendre des claims
+  allow-sell-claims: false
+  
+  # Autoriser les joueurs à acheter des claims
+  allow-buy-claims: false
+  
+  # Autoriser la téléportation vers les claims sur les serveurs survie
+  allow-teleport: true
+  
+  # Message affiché quand un joueur essaie de claim sur un serveur lobby
+  cannot-claim-message: "&cVous ne pouvez pas créer de claims sur ce serveur. Veuillez utiliser un serveur survie."
+
+# Paramètres pour les serveurs SURVIVAL
+survival-settings:
+  # Maximum de claims par joueur (0 = utiliser les paramètres de config.yml)
+  max-claims: 0
+  
+  # Annoncer les nouveaux claims à tous les serveurs
+  broadcast-new-claims: true
+  
+  # Annoncer les ventes de claims à tous les serveurs
+  broadcast-sales: true
