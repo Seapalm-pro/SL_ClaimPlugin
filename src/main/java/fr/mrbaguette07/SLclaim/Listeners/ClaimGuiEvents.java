@@ -1006,7 +1006,15 @@ public class ClaimGuiEvents implements Listener {
         }
         
         if(guiSettings.getSlots().contains(clickedSlot)) {
+        	String claimInfo = cPlayer.getMapString(clickedSlot);
+        	if (claimInfo != null && claimInfo.contains(";")) {
+        	    handleMultiServerClaimClick(event, player, cPlayer, claimInfo);
+        	    return;
+        	}
+        	
         	Claim claim = cPlayer.getMapClaim(clickedSlot);
+        	if (claim == null) return;
+        	
         	if(event.getClick() == ClickType.LEFT) {
         		if(instance.getPlayerMain().checkPermPlayer(player, "slclaim.command.claim.tp")) {
 		            if(!claim.getPermissionForPlayer("GuiTeleport",player) && !claim.getOwner().equals(player.getName()) && !instance.getPlayerMain().checkPermPlayer(player, "slclaim.bypass.guiteleport")) return;
@@ -1077,6 +1085,48 @@ public class ClaimGuiEvents implements Listener {
         return;
     }
     
+    /**
+     * Handles claim click events in multi-server mode.
+     * @param event the inventory click event.
+     * @param player the player clicking in the inventory.
+     * @param cPlayer the CPlayer object for the player.
+     * @param claimInfo the claim info string (format: "claimName;serverOrigin").
+     */
+    private void handleMultiServerClaimClick(InventoryClickEvent event, Player player, CPlayer cPlayer, String claimInfo) {
+        String[] parts = claimInfo.split(";");
+        if (parts.length < 2) return;
+        
+        String claimName = parts[0];
+        String serverOrigin = parts[1];
+        String ownerName = cPlayer.getOwner();
+        
+        if (event.getClick() == ClickType.LEFT) {
+            if (!instance.getPlayerMain().checkPermPlayer(player, "slclaim.command.claim.tp")) return;
+            
+            instance.executeEntitySync(player, () -> player.closeInventory());
+            
+            String currentServer = instance.getMultiServerManager().getConfig().getServerName();
+            if (serverOrigin.equals(currentServer)) {
+                Claim localClaim = instance.getMain().getClaimByName(claimName, ownerName);
+                if (localClaim != null) {
+                    instance.getMain().goClaim(player, localClaim.getLocation());
+                } else {
+                    player.sendMessage(instance.getLanguage().getMessage("claim-player-not-found"));
+                }
+            } else {
+                player.sendMessage(instance.getLanguage().getMessage("teleportation-to-other-server")
+                    .replace("%server%", serverOrigin));
+                instance.getMain().goClaimCrossServer(player, ownerName, claimName, serverOrigin);
+            }
+            return;
+        }
+        
+        if (event.getClick() == ClickType.SHIFT_LEFT) {
+            player.sendMessage("§cL'achat de claims cross-serveur n'est pas encore supporté.");
+            return;
+        }
+    }
+
 	/**
      * Handles admin gestion main claim GUI click events.
      * @param event the inventory click event.

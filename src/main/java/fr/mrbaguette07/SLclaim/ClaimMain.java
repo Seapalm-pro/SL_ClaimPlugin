@@ -5284,4 +5284,121 @@ public class ClaimMain {
             instance.getMultiServerManager().broadcastClaimUpdate(claim, ownerUUID);
         }
     }
+    
+    /**
+     * Gets all claims for an owner from MongoDB (for multi-server).
+     * Returns a CompletableFuture with a list of claim data maps.
+     *
+     * @param ownerName The owner's name
+     * @return CompletableFuture with list of claim data
+     */
+    public CompletableFuture<List<Map<String, Object>>> getClaimsFromMongoByOwner(String ownerName) {
+        if (instance.getMultiServerManager() == null || !instance.getMultiServerManager().isEnabled()) {
+            return CompletableFuture.supplyAsync(() -> {
+                List<Map<String, Object>> result = new ArrayList<>();
+                for (Claim claim : getPlayerClaims(ownerName)) {
+                    Map<String, Object> claimData = new HashMap<>();
+                    claimData.put("claim_name", claim.getName());
+                    claimData.put("owner_name", claim.getOwner());
+                    claimData.put("claim_description", claim.getDescription());
+                    claimData.put("for_sale", claim.getSale());
+                    claimData.put("sale_price", claim.getPrice());
+                    claimData.put("location", claim.getLocation().getWorld().getName() + ";" +
+                            claim.getLocation().getX() + ";" + claim.getLocation().getY() + ";" +
+                            claim.getLocation().getZ() + ";" + claim.getLocation().getYaw() + ";" +
+                            claim.getLocation().getPitch());
+                    claimData.put("server_origin", instance.getMultiServerManager() != null ? 
+                            instance.getMultiServerManager().getConfig().getServerName() : "local");
+                    result.add(claimData);
+                }
+                return result;
+            });
+        }
+        
+        return instance.getMultiServerManager().getMongoDBManager().getClaimsByOwnerName(ownerName)
+            .thenApply(documents -> {
+                List<Map<String, Object>> result = new ArrayList<>();
+                for (org.bson.Document doc : documents) {
+                    Map<String, Object> claimData = new HashMap<>();
+                    claimData.put("claim_name", doc.getString("claim_name"));
+                    claimData.put("owner_name", doc.getString("owner_name"));
+                    claimData.put("claim_description", doc.getString("claim_description"));
+                    claimData.put("for_sale", doc.getBoolean("for_sale", false));
+                    Long salePriceLong = doc.getLong("sale_price");
+                    claimData.put("sale_price", salePriceLong != null ? salePriceLong.intValue() : 0);
+                    claimData.put("location", doc.getString("location"));
+                    claimData.put("server_origin", doc.getString("server_origin"));
+                    result.add(claimData);
+                }
+                return result;
+            });
+    }
+    
+    /**
+     * Gets a claim from MongoDB by owner and claim name.
+     * Returns a CompletableFuture with the claim data.
+     *
+     * @param ownerName The owner's name
+     * @param claimName The claim's name
+     * @return CompletableFuture with claim data map (or null)
+     */
+    public CompletableFuture<Map<String, Object>> getClaimFromMongoByName(String ownerName, String claimName) {
+        if (instance.getMultiServerManager() == null || !instance.getMultiServerManager().isEnabled()) {
+            return CompletableFuture.supplyAsync(() -> {
+                Claim claim = getClaimByName(claimName, ownerName);
+                if (claim == null) return null;
+                
+                Map<String, Object> claimData = new HashMap<>();
+                claimData.put("claim_name", claim.getName());
+                claimData.put("owner_name", claim.getOwner());
+                claimData.put("claim_description", claim.getDescription());
+                claimData.put("for_sale", claim.getSale());
+                claimData.put("sale_price", claim.getPrice());
+                claimData.put("location", claim.getLocation().getWorld().getName() + ";" +
+                        claim.getLocation().getX() + ";" + claim.getLocation().getY() + ";" +
+                        claim.getLocation().getZ() + ";" + claim.getLocation().getYaw() + ";" +
+                        claim.getLocation().getPitch());
+                claimData.put("server_origin", instance.getMultiServerManager() != null ? 
+                        instance.getMultiServerManager().getConfig().getServerName() : "local");
+                return claimData;
+            });
+        }
+        
+        return instance.getMultiServerManager().getMongoDBManager().getClaimByOwnerAndName(ownerName, claimName)
+            .thenApply(doc -> {
+                if (doc == null) return null;
+                
+                Map<String, Object> claimData = new HashMap<>();
+                claimData.put("claim_name", doc.getString("claim_name"));
+                claimData.put("owner_name", doc.getString("owner_name"));
+                claimData.put("claim_description", doc.getString("claim_description"));
+                claimData.put("for_sale", doc.getBoolean("for_sale", false));
+                // MongoDB stores sale_price as Long, not Integer
+                Long salePriceLong = doc.getLong("sale_price");
+                claimData.put("sale_price", salePriceLong != null ? salePriceLong.intValue() : 0);
+                claimData.put("location", doc.getString("location"));
+                claimData.put("server_origin", doc.getString("server_origin"));
+                return claimData;
+            });
+    }
+    
+    /**
+     * Teleports a player to a claim on another server.
+     *
+     * @param player The player to teleport
+     * @param ownerName The claim owner's name
+     * @param claimName The claim name
+     * @param targetServer The target server name
+     */
+    public void goClaimCrossServer(Player player, String ownerName, String claimName, String targetServer) {
+        if (instance.getMultiServerManager() == null || !instance.getMultiServerManager().isEnabled()) {
+            player.sendMessage(instance.getLanguage().getMessage("error"));
+            return;
+        }
+        
+        instance.getMultiServerManager().sendPendingClaimTp(player.getUniqueId(), targetServer, ownerName, claimName);
+
+        transferPlayerToServer(player, targetServer);
+    }
+    
 }

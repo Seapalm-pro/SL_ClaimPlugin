@@ -1,6 +1,13 @@
 package fr.mrbaguette07.SLclaim.API;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 import org.bukkit.Bukkit;
@@ -10,6 +17,7 @@ import org.bukkit.World;
 import org.bukkit.entity.Player;
 
 import fr.mrbaguette07.SLclaim.SLclaim;
+import fr.mrbaguette07.SLclaim.MultiServer.MultiServerManager;
 import fr.mrbaguette07.SLclaim.Types.CPlayer;
 import fr.mrbaguette07.SLclaim.Types.Claim;
 import fr.mrbaguette07.SLclaim.Types.CustomSet;
@@ -252,6 +260,206 @@ public class SLclaimAPI_Impl implements SLclaimAPI {
 	@Override
 	public void updateBossBar(Player player, Chunk chunk) {
 		instance.getBossBars().activeBossBar(player, chunk);
+	}
+	
+	@Override
+	public CompletableFuture<Claim> createClaimAsync(World world, String owner, String name, String description, Location location, long price) {
+		return CompletableFuture.completedFuture(null);
+	}
+	
+	@Override
+	public Claim createClaim(World world, String owner, String name, String description, Location location, long price) {
+		return createClaimAsync(world, owner, name, description, location, price).join();
+	}
+	
+	@Override
+	public List<String> getAllServers() {
+		MultiServerManager msm = instance.getMultiServerManager();
+		if (msm == null || !msm.isEnabled()) {
+			return Collections.emptyList();
+		}
+		return new ArrayList<>(msm.getConfig().getSurvivalServers());
+	}
+	
+	@Override
+	public Set<Claim> getPlayerClaimsOnServer(String playerName, String serverName) {
+		return instance.getMain().getPlayerClaims(playerName);
+	}
+	
+	@Override
+	public Map<String, Object> getClaimData(Claim claim) {
+		Map<String, Object> data = new HashMap<>();
+		data.put("name", claim.getName());
+		data.put("owner", claim.getOwner());
+		data.put("description", claim.getDescription());
+		data.put("for_sale", claim.getSale());
+		data.put("price", claim.getPrice());
+		data.put("location", claim.getLocation());
+		data.put("members", claim.getMembers());
+		data.put("bans", claim.getBans());
+		return data;
+	}
+	
+	@Override
+	public boolean loadClaimData(Claim claim) {
+		return true;
+	}
+	
+	@Override
+	public boolean saveClaimData(Claim claim) {
+		return true;
+	}
+	
+	@Override
+	public boolean deleteClaimData(Claim claim) {
+		return unclaim(claim);
+	}
+
+	@Override
+	public boolean isMultiServerEnabled() {
+		MultiServerManager msm = instance.getMultiServerManager();
+		return msm != null && msm.isEnabled();
+	}
+	
+	@Override
+	public boolean isLobbyServer() {
+		MultiServerManager msm = instance.getMultiServerManager();
+		return msm != null && msm.isEnabled() && msm.isLobbyServer();
+	}
+	
+	@Override
+	public boolean canClaimOnThisServer() {
+		MultiServerManager msm = instance.getMultiServerManager();
+		if (msm == null || !msm.isEnabled()) {
+			return true;
+		}
+		return msm.canClaim();
+	}
+	
+	@Override
+	public String getServerName() {
+		MultiServerManager msm = instance.getMultiServerManager();
+		if (msm == null || !msm.isEnabled()) {
+			return null;
+		}
+		return msm.getConfig().getServerName();
+	}
+	
+	@Override
+	public boolean isServerOnline(String serverName) {
+		MultiServerManager msm = instance.getMultiServerManager();
+		if (msm == null || !msm.isEnabled()) {
+			return false;
+		}
+		return msm.isServerOnline(serverName);
+	}
+	
+	@Override
+	public List<String> getOnlineSurvivalServers() {
+		MultiServerManager msm = instance.getMultiServerManager();
+		if (msm == null || !msm.isEnabled()) {
+			return Collections.emptyList();
+		}
+		return msm.getConfig().getSurvivalServers().stream()
+				.filter(msm::isServerOnline)
+				.collect(Collectors.toList());
+	}
+	
+	@Override
+	public List<String> getOnlineLobbyServers() {
+		MultiServerManager msm = instance.getMultiServerManager();
+		if (msm == null || !msm.isEnabled()) {
+			return Collections.emptyList();
+		}
+		return msm.getConfig().getLobbyServers().stream()
+				.filter(msm::isServerOnline)
+				.collect(Collectors.toList());
+	}
+	
+	@Override
+	public CompletableFuture<List<Map<String, Object>>> getClaimsFromMongo(String ownerName) {
+		return instance.getMain().getClaimsFromMongoByOwner(ownerName);
+	}
+	
+	@Override
+	public CompletableFuture<Map<String, Object>> getClaimFromMongo(String ownerName, String claimName) {
+		return instance.getMain().getClaimFromMongoByName(ownerName, claimName);
+	}
+	
+	@Override
+	public CompletableFuture<Map<String, Integer>> getClaimOwnersFromMongo() {
+		return instance.getMain().getClaimsOwnersGuiFromMongo();
+	}
+	
+	@Override
+	public void teleportToClaimCrossServer(Player player, String ownerName, String claimName) {
+		instance.getMain().goClaimCrossServer(player, ownerName, claimName);
+	}
+	
+	@Override
+	public void teleportToClaimOnServer(Player player, String ownerName, String claimName, String targetServer) {
+		instance.getMain().goClaimCrossServer(player, ownerName, claimName, targetServer);
+	}
+	
+	@Override
+	public void transferPlayerToServer(Player player, String serverName) {
+		instance.getMain().transferPlayerToServer(player, serverName);
+	}
+
+	@Override
+	public Claim getClaimByName(String ownerName, String claimName) {
+		return instance.getMain().getClaimByName(claimName, ownerName);
+	}
+	
+	@Override
+	public Claim getClaimByName(UUID ownerUUID, String claimName) {
+		return instance.getMain().getClaimByName(claimName, ownerUUID);
+	}
+	
+	@Override
+	public Set<Claim> getPlayerClaimsByName(String ownerName) {
+		return instance.getMain().getPlayerClaims(ownerName);
+	}
+	
+	@Override
+	public Set<Claim> getPlayerClaimsByUUID(UUID ownerUUID) {
+		return instance.getMain().getPlayerClaims(ownerUUID);
+	}
+	
+	@Override
+	public Set<Claim> getClaimsWhereMember(UUID playerUUID) {
+		Player player = Bukkit.getPlayer(playerUUID);
+		if (player == null) {
+			return Collections.emptySet();
+		}
+		return instance.getMain().getClaimsWhereMemberNotOwner(player);
+	}
+	
+	@Override
+	public int getTotalClaimCount() {
+		return instance.getMain().getAllClaimsCount();
+	}
+	
+	@Override
+	public Set<Claim> getClaimsForSale() {
+		return instance.getMain().getAllClaims().stream()
+				.filter(Claim::getSale)
+				.collect(Collectors.toSet());
+	}
+	
+	@Override
+	public Map<String, Integer> getClaimOwners() {
+		return instance.getMain().getClaimsOwnersGui();
+	}
+	
+	@Override
+	public Map<String, Integer> getOnlineClaimOwners() {
+		return instance.getMain().getClaimsOnlineOwners();
+	}
+	
+	@Override
+	public Map<String, Integer> getOfflineClaimOwners() {
+		return instance.getMain().getClaimsOfflineOwners();
 	}
 	
 }

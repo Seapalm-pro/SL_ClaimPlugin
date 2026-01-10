@@ -87,6 +87,15 @@ public class ClaimsOwnerGui implements InventoryHolder {
      */
     private CompletableFuture<Boolean> loadItems(int page, String filter, String owner) {
     	
+    	boolean useMultiServer = instance.getMultiServerManager() != null && 
+    	                         instance.getMultiServerManager().isEnabled() &&
+    	                         instance.getMultiServerManager().getMongoDBManager() != null &&
+    	                         instance.getMultiServerManager().getMongoDBManager().isConnected();
+    	
+    	if (useMultiServer) {
+    	    return loadItemsFromMongo(page, filter, owner);
+    	}
+    	
     	return CompletableFuture.supplyAsync(() -> {
     	
 	    	// Get player data
@@ -221,6 +230,157 @@ public class ClaimsOwnerGui implements InventoryHolder {
         
     	});
 	        
+    }
+    
+    /**
+     * Load items from MongoDB for multi-server mode.
+     * 
+     * @param page   The current page of the GUI.
+     * @param filter The filter applied to the claims.
+     * @param owner  The owner of the claims.
+     * @return A CompletableFuture with a boolean to check if the gui is correctly initialized.
+     */
+    private CompletableFuture<Boolean> loadItemsFromMongo(int page, String filter, String owner) {
+        return instance.getMain().getClaimsFromMongoByOwner(owner).thenApply(claimsData -> {
+            try {
+                if ("sales".equals(filter)) {
+                    claimsData = claimsData.stream()
+                        .filter(c -> Boolean.TRUE.equals(c.get("for_sale")))
+                        .toList();
+                }
+                List<Map<String, Object>> claimList = new ArrayList<>(claimsData);
+                claimList.sort((c1, c2) -> String.valueOf(c1.get("claim_name")).compareTo(String.valueOf(c2.get("claim_name"))));
+                int claimsCount = claimList.size();
+
+                CPlayer cPlayer = instance.getPlayerMain().getCPlayer(player.getUniqueId());
+
+                cPlayer.setOwner(owner);
+                cPlayer.setFilter(filter);
+                cPlayer.clearMapClaim();
+                cPlayer.clearMapLoc();
+                cPlayer.clearMapString();
+                cPlayer.setGuiPage(page);
+                
+                GuiSettings guiSettings = ClaimGuis.gui_settings.get("claims_owner");
+                int max = guiSettings.getSlots().size();
+                
+                List<GuiSlot> slots = new ArrayList<>(ClaimGuis.gui_slots.get("claims_owner"));
+                for(GuiSlot slot : slots) {
+                    int slot_int = slot.getSlot();
+                    String key = slot.getKey();
+                    String title = slot.getTitle();
+                    String lore_string = slot.getLore();
+                    if(key.equals("BackPageOther")) {
+                        if(page > 1) continue;
+                    }
+                    if(key.equals("BackPage")) {
+                        if(page == 1) continue;
+                        title = title.replace("%page%", String.valueOf(page-1));
+                        lore_string = lore_string.replace("%page%", String.valueOf(page-1));
+                    }
+                    if(key.equals("NextPage")) {
+                        if(claimsCount <= (page*max)) continue;
+                        title = title.replace("%page%", String.valueOf(page+1));
+                        lore_string = lore_string.replace("%page%", String.valueOf(page+1));
+                    }
+                    if (key.equals("Filter")) {
+                        lore_string = lore_string
+                                .replaceAll("%status_color_" + getStatusIndex(filter) + "%", instance.getLanguage().getMessage("status_color_active_filter"))
+                                .replaceAll("%status_color_[^" + getStatusIndex(filter) + "]%", instance.getLanguage().getMessage("status_color_inactive_filter"));
+                    }
+                    List<String> lore = instance.getGuis().getLore(lore_string);
+                    if(title.isBlank()) title = null;
+                    if(lore.isEmpty()) lore = null;
+                    if(slot.isCustomModel()) {
+                        Material mat = slot.getMaterial();
+                        inv.setItem(slot_int, instance.getGuis().createCustomItem(mat, title, lore, slot.getCustomModelData()));
+                    } else if (slot.isCustomHead()) {
+                        if(slot.getCustomTextures().equalsIgnoreCase("%player%")) {
+                            ItemStack head = new ItemStack(Material.PLAYER_HEAD);
+                            SkullMeta meta = (SkullMeta) head.getItemMeta();
+                            meta.setOwningPlayer(player);
+                            meta.setDisplayName(title);
+                            meta.setLore(lore);
+                            head.setItemMeta(meta);
+                            inv.setItem(slot_int, head);
+                        } else if (slot.getCustomTextures().length() < 17) {
+                            ItemStack head = new ItemStack(Material.PLAYER_HEAD);
+                            SkullMeta meta = (SkullMeta) head.getItemMeta();
+                            OfflinePlayer targetP = Bukkit.getOfflinePlayer(slot.getCustomTextures());
+                            if(targetP != null) {
+                                meta.setOwningPlayer(targetP);
+                            }
+                            meta.setDisplayName(title);
+                            meta.setLore(lore);
+                            head.setItemMeta(meta);
+                            inv.setItem(slot_int, head);
+                        } else {
+                            inv.setItem(slot_int, instance.getPlayerMain().createPlayerHeadWithTexture(slot.getCustomTextures(), title, lore));
+                        }
+                    } else {
+                        Material mat = slot.getMaterial();
+                        inv.setItem(slot_int, instance.getGuis().createItem(mat, title, lore));
+                    }
+                }
+                
+                int startItem = (page - 1) * max;
+                List<Integer> slots_i = guiSettings.getSlots();
+                int i = slots_i.get(0);
+                int count = 0;
+                int count2 = 0;
+                
+                for (Map<String, Object> claimData : claimList) {
+                    if (count++ < startItem) continue;
+                    
+                    if (count2 > max-1) break;
+                    
+                    i = slots_i.get(count2);
+                    count2++;
+                    
+                    String claimName = String.valueOf(claimData.get("claim_name"));
+                    String description = String.valueOf(claimData.get("claim_description"));
+                    String serverOrigin = String.valueOf(claimData.get("server_origin"));
+                    boolean forSale = Boolean.TRUE.equals(claimData.get("for_sale"));
+                    int salePrice = claimData.get("sale_price") != null ? ((Number) claimData.get("sale_price")).intValue() : 0;
+                    
+                    List<String> lore = new ArrayList<>();
+                    lore.add("§7" + ChatColor.translateAlternateColorCodes('&', description));
+                    lore.add(" ");
+                    lore.add("§7Serveur: §b" + serverOrigin);
+                    lore.add(" ");
+                    
+                    if (forSale && instance.getSettings().getBooleanSetting("economy")) {
+                        lore.add("§7Claim à vendre !");
+                        lore.add("§7Prix : §6" + instance.getMain().getNumberSeparate(String.valueOf(salePrice)) + instance.getLanguage().getMessage("money-symbol"));
+                        lore.add(" ");
+                    }
+                    
+                    lore.add("§7▸ §fClic-gauche pour vous téléporter");
+                    
+                    String title = instance.getLanguage().getMessage("access-all-claim-title")
+                            .replace("%owner%", owner)
+                            .replace("%name%", claimName)
+                            .replace("%coords%", "");
+                    
+                    cPlayer.addMapString(i, claimName + ";" + serverOrigin);
+                    
+                    ItemStack item = instance.getPlayerMain().getPlayerHead(owner);
+                    if(item == null) {
+                        item = new ItemStack(Material.PLAYER_HEAD);
+                    }
+                    SkullMeta meta = (SkullMeta) item.getItemMeta();
+                    meta.setDisplayName(title);
+                    meta.setLore(lore);
+                    item.setItemMeta(meta);
+                    inv.setItem(i, item);
+                }
+                
+                return true;
+            } catch (Exception e) {
+                e.printStackTrace();
+                return false;
+            }
+        });
     }
 
     /**

@@ -63,7 +63,8 @@ dependencies {
     
     // Utilitaires
     implementation("com.mojang:authlib:1.5.21")
-    implementation("com.flowpowered:flow-math:1.0.3")
+    // Use compileOnly for flow-math to avoid conflicts with BlueMap
+    compileOnly("com.flowpowered:flow-math:1.0.3")
     implementation("com.google.code.gson:gson:2.10.1")
     
     // Tests
@@ -88,6 +89,8 @@ tasks.jar {
         exclude("META-INF/*.SF")
         exclude("META-INF/*.DSA")
         exclude("META-INF/*.RSA")
+        // Exclude flowpowered to avoid conflicts with BlueMap
+        exclude("com/flowpowered/**")
     }
     
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE

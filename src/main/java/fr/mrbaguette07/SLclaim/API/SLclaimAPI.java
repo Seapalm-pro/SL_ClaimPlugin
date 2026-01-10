@@ -1,6 +1,10 @@
 package fr.mrbaguette07.SLclaim.API;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 import org.bukkit.Chunk;
 import org.bukkit.Location;
@@ -344,4 +348,269 @@ public interface SLclaimAPI {
      * @param chunk The chunk.
      */
     void updateBossBar(Player player, Chunk chunk);
+
+    /**
+     * Creates a new claim asynchronously.
+     *
+     * @param world The world where the claim will be created.
+     * @param owner The owner of the claim.
+     * @param name The name of the claim.
+     * @param description The description of the claim.
+     * @param location The location of the claim.
+     * @param price The price of the claim.
+     * @return A CompletableFuture that will complete with the created Claim, or exceptionally if the claim could not be created.
+     */
+    CompletableFuture<Claim> createClaimAsync(World world, String owner, String name, String description, Location location, long price);
+
+    /**
+     * Creates a new claim.
+     *
+     * @param world The world where the claim will be created.
+     * @param owner The owner of the claim.
+     * @param name The name of the claim.
+     * @param description The description of the claim.
+     * @param location The location of the claim.
+     * @param price The price of the claim.
+     * @return The created Claim, or null if the claim could not be created.
+     */
+    Claim createClaim(World world, String owner, String name, String description, Location location, long price);
+
+    /**
+     * Retrieves a list of all servers.
+     *
+     * @return A list of server names.
+     */
+    List<String> getAllServers();
+
+    /**
+     * Retrieves the claims of a player on a specific server.
+     *
+     * @param playerName The name of the player.
+     * @param serverName The name of the server.
+     * @return A set of claims belonging to the player on the specified server.
+     */
+    Set<Claim> getPlayerClaimsOnServer(String playerName, String serverName);
+
+    /**
+     * Retrieves the claim data from the database.
+     *
+     * @param claim The claim to retrieve data for.
+     * @return A map containing the claim data.
+     */
+    Map<String, Object> getClaimData(Claim claim);
+
+    /**
+     * Loads claim data from the database.
+     *
+     * @param claim The claim to load data for.
+     * @return True if the data was successfully loaded, false otherwise.
+     */
+    boolean loadClaimData(Claim claim);
+
+    /**
+     * Saves claim data to the database.
+     *
+     * @param claim The claim to save data for.
+     * @return True if the data was successfully saved, false otherwise.
+     */
+    boolean saveClaimData(Claim claim);
+
+    /**
+     * Deletes claim data from the database.
+     *
+     * @param claim The claim to delete data for.
+     * @return True if the data was successfully deleted, false otherwise.
+     */
+    boolean deleteClaimData(Claim claim);
+    
+    
+    // ***************************
+    // *  Multi-Server Methods   *
+    // ***************************
+    
+    
+    /**
+     * Checks if multi-server mode is enabled.
+     *
+     * @return true if multi-server mode is enabled, false otherwise.
+     */
+    boolean isMultiServerEnabled();
+    
+    /**
+     * Checks if the current server is a lobby server.
+     *
+     * @return true if the current server is a lobby server, false otherwise.
+     */
+    boolean isLobbyServer();
+    
+    /**
+     * Checks if claiming is allowed on this server.
+     *
+     * @return true if claiming is allowed, false otherwise.
+     */
+    boolean canClaimOnThisServer();
+    
+    /**
+     * Gets the name of the current server.
+     *
+     * @return The server name, or null if multi-server is not enabled.
+     */
+    String getServerName();
+    
+    /**
+     * Checks if a specific server is online.
+     *
+     * @param serverName The name of the server to check.
+     * @return true if the server is online, false otherwise.
+     */
+    boolean isServerOnline(String serverName);
+    
+    /**
+     * Gets a list of all online survival servers.
+     *
+     * @return A list of online survival server names.
+     */
+    List<String> getOnlineSurvivalServers();
+    
+    /**
+     * Gets a list of all online lobby servers.
+     *
+     * @return A list of online lobby server names.
+     */
+    List<String> getOnlineLobbyServers();
+    
+    /**
+     * Gets claims from MongoDB for a specific owner (multi-server mode).
+     * This is useful for lobby servers that don't have local claims.
+     *
+     * @param ownerName The name of the owner.
+     * @return A CompletableFuture with a list of claim data maps.
+     */
+    CompletableFuture<List<Map<String, Object>>> getClaimsFromMongo(String ownerName);
+    
+    /**
+     * Gets a specific claim from MongoDB by owner and name (multi-server mode).
+     *
+     * @param ownerName The name of the owner.
+     * @param claimName The name of the claim.
+     * @return A CompletableFuture with the claim data map, or null if not found.
+     */
+    CompletableFuture<Map<String, Object>> getClaimFromMongo(String ownerName, String claimName);
+    
+    /**
+     * Gets all claim owners with their claim counts from MongoDB.
+     *
+     * @return A CompletableFuture with a map of owner names to claim counts.
+     */
+    CompletableFuture<Map<String, Integer>> getClaimOwnersFromMongo();
+    
+    /**
+     * Teleports a player to a claim on another server (cross-server teleport).
+     *
+     * @param player The player to teleport.
+     * @param ownerName The name of the claim owner.
+     * @param claimName The name of the claim.
+     */
+    void teleportToClaimCrossServer(Player player, String ownerName, String claimName);
+    
+    /**
+     * Teleports a player to a claim on a specific server.
+     *
+     * @param player The player to teleport.
+     * @param ownerName The name of the claim owner.
+     * @param claimName The name of the claim.
+     * @param targetServer The target server name.
+     */
+    void teleportToClaimOnServer(Player player, String ownerName, String claimName, String targetServer);
+    
+    /**
+     * Transfers a player to another server.
+     *
+     * @param player The player to transfer.
+     * @param serverName The name of the target server.
+     */
+    void transferPlayerToServer(Player player, String serverName);
+    
+    
+    // ***************************
+    // *  Claim Query Methods    *
+    // ***************************
+    
+    
+    /**
+     * Gets a claim by owner name and claim name.
+     *
+     * @param ownerName The owner's name.
+     * @param claimName The claim's name.
+     * @return The claim, or null if not found.
+     */
+    Claim getClaimByName(String ownerName, String claimName);
+    
+    /**
+     * Gets a claim by owner UUID and claim name.
+     *
+     * @param ownerUUID The owner's UUID.
+     * @param claimName The claim's name.
+     * @return The claim, or null if not found.
+     */
+    Claim getClaimByName(UUID ownerUUID, String claimName);
+    
+    /**
+     * Gets a player's claims by their name.
+     *
+     * @param ownerName The player's name.
+     * @return A set of claims belonging to the player.
+     */
+    Set<Claim> getPlayerClaimsByName(String ownerName);
+    
+    /**
+     * Gets a player's claims by their UUID.
+     *
+     * @param ownerUUID The player's UUID.
+     * @return A set of claims belonging to the player.
+     */
+    Set<Claim> getPlayerClaimsByUUID(UUID ownerUUID);
+    
+    /**
+     * Gets all claims where a player is a member (but not the owner).
+     *
+     * @param playerUUID The player's UUID.
+     * @return A set of claims where the player is a member.
+     */
+    Set<Claim> getClaimsWhereMember(UUID playerUUID);
+    
+    /**
+     * Gets the total number of claims.
+     *
+     * @return The total claim count.
+     */
+    int getTotalClaimCount();
+    
+    /**
+     * Gets all claims that are for sale.
+     *
+     * @return A set of claims that are for sale.
+     */
+    Set<Claim> getClaimsForSale();
+    
+    /**
+     * Gets all claim owners with their claim counts.
+     *
+     * @return A map of owner names to claim counts.
+     */
+    Map<String, Integer> getClaimOwners();
+    
+    /**
+     * Gets all online claim owners with their claim counts.
+     *
+     * @return A map of online owner names to claim counts.
+     */
+    Map<String, Integer> getOnlineClaimOwners();
+    
+    /**
+     * Gets all offline claim owners with their claim counts.
+     *
+     * @return A map of offline owner names to claim counts.
+     */
+    Map<String, Integer> getOfflineClaimOwners();
 }

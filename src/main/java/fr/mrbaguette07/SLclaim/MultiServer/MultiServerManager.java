@@ -304,6 +304,20 @@ public class MultiServerManager {
         return new HashMap<>(onlineServers);
     }
     
+    /**
+     * Gets a set of all player names currently online on any server in the network.
+     * This is used to determine which claim owners are online in multi-server mode.
+     *
+     * @return Set of online player names across all servers
+     */
+    public Set<String> getAllOnlinePlayerNames() {
+        Set<String> onlinePlayerNames = new HashSet<>();
+        
+        Bukkit.getOnlinePlayers().forEach(p -> onlinePlayerNames.add(p.getName()));
+
+        return onlinePlayerNames;
+    }
+    
     // ************************
     // *  Pending RTP System  *
     // ************************
@@ -445,8 +459,16 @@ public class MultiServerManager {
     public void broadcastClaimCreate(Claim claim, UUID ownerUUID) {
         if (!isEnabled()) return;
         
+        instance.info("§aBroadcasting claim creation: " + claim.getName() + " for owner " + claim.getOwner());
+        
         // Save to MongoDB
-        mongoDBManager.saveClaim(claim, ownerUUID);
+        mongoDBManager.saveClaim(claim, ownerUUID).thenAccept(success -> {
+            if (success) {
+                instance.info("§aClaim " + claim.getName() + " saved to MongoDB successfully");
+            } else {
+                instance.info("§cFailed to save claim " + claim.getName() + " to MongoDB");
+            }
+        });
         
         // Broadcast via Redis
         RedisMessage message = new RedisMessage(MessageType.CLAIM_CREATE, config.getServerName())
@@ -1001,21 +1023,43 @@ public class MultiServerManager {
     
     /**
      * Reloads all claims from MongoDB.
+     * This is used by LOBBY servers to get claims from survival servers.
      */
     public void reloadAllClaimsFromMongo() {
-        mongoDBManager.getAllClaims().thenAccept(docs -> {
-            instance.executeSync(() -> {
-                instance.getMain().clearAll();
-                
-                for (Document doc : docs) {
-                    try {
-                        createClaimFromDocument(doc);
-                    } catch (Exception e) {
-                        instance.info("§cÉchec du chargement du claim depuis MongoDB : " + e.getMessage());
-                    }
+        if (config.isLobbyServer()) {
+            mongoDBManager.getAllClaims().thenAccept(docs -> {
+                instance.executeSync(() -> {
+                    instance.info(docs.size() + " claims disponibles dans MongoDB.");
+                });
+            });
+        } else {
+            instance.info("§eSynchronisation des claims locaux vers MongoDB...");
+            syncLocalClaimsToMongo();
+        }
+    }
+    
+    /**
+     * Synchronizes all local claims to MongoDB.
+     * This is called at startup for survival servers.
+     */
+    public void syncLocalClaimsToMongo() {
+        instance.executeAsync(() -> {
+            CustomSet<Claim> allClaims = instance.getMain().getAllClaims();
+            int count = 0;
+            
+            for (Claim claim : allClaims) {
+                try {
+                    UUID ownerUUID = claim.getUUID();
+                    mongoDBManager.saveClaim(claim, ownerUUID).join();
+                    count++;
+                } catch (Exception e) {
+                    instance.info("§cÉchec de la synchronisation du claim " + claim.getName() + " : " + e.getMessage());
                 }
-                
-                instance.info(docs.size() + " claims chargés depuis MongoDB.");
+            }
+            
+            int finalCount = count;
+            instance.executeSync(() -> {
+                instance.info("§a" + finalCount + " claims synchronisés vers MongoDB.");
             });
         });
     }

@@ -95,13 +95,51 @@ public class ClaimEventsEnterLeave implements Listener {
                     // Vérifier d'abord si c'est un pending claim TP
                     MultiServerManager.ClaimTeleportData claimTpData = multiManager.consumePendingClaimTp(player.getUniqueId());
                     if (claimTpData != null) {
-                        instance.info("ClaimTP: Exécution du pending claim TP pour " + player.getName() + " vers le claim " + claimTpData.claimName);
-                        // Téléporter au claim
+                        instance.info("ClaimTP: Exécution du pending claim TP pour " + player.getName() + " vers le claim " + claimTpData.claimName + " (owner: " + claimTpData.ownerName + ")");
                         Claim claim = instance.getMain().getClaimByName(claimTpData.claimName, claimTpData.ownerName);
                         if (claim != null) {
                             instance.getMain().goClaim(player, claim.getLocation());
                         } else {
-                            player.sendMessage(instance.getLanguage().getMessage("claim-player-not-found"));
+                            instance.info("ClaimTP: Claim non trouvé localement, recherche dans MongoDB...");
+                            instance.getMain().getClaimFromMongoByName(claimTpData.ownerName, claimTpData.claimName)
+                                .thenAccept(claimData -> {
+                                    if (claimData != null) {
+                                        String locationStr = (String) claimData.get("location");
+                                        if (locationStr != null) {
+                                            String[] parts = locationStr.split(";");
+                                            if (parts.length >= 6) {
+                                                org.bukkit.World world = org.bukkit.Bukkit.getWorld(parts[0]);
+                                                if (world != null) {
+                                                    double x = Double.parseDouble(parts[1]);
+                                                    double y = Double.parseDouble(parts[2]);
+                                                    double z = Double.parseDouble(parts[3]);
+                                                    float yaw = Float.parseFloat(parts[4]);
+                                                    float pitch = Float.parseFloat(parts[5]);
+                                                    org.bukkit.Location location = new org.bukkit.Location(world, x, y, z, yaw, pitch);
+                                                    instance.executeEntitySync(player, () -> {
+                                                        instance.getMain().goClaim(player, location);
+                                                        instance.info("ClaimTP: Joueur " + player.getName() + " téléporté au claim depuis MongoDB");
+                                                    });
+                                                } else {
+                                                    instance.executeEntitySync(player, () -> 
+                                                        player.sendMessage(instance.getLanguage().getMessage("claim-player-not-found"))
+                                                    );
+                                                }
+                                            }
+                                        }
+                                    } else {
+                                        instance.executeEntitySync(player, () -> 
+                                            player.sendMessage(instance.getLanguage().getMessage("claim-player-not-found"))
+                                        );
+                                    }
+                                })
+                                .exceptionally(ex -> {
+                                    ex.printStackTrace();
+                                    instance.executeEntitySync(player, () -> 
+                                        player.sendMessage(instance.getLanguage().getMessage("error"))
+                                    );
+                                    return null;
+                                });
                         }
                         return;
                     }

@@ -403,18 +403,25 @@ public class MongoDBManager {
      */
     public CompletableFuture<Map<String, Integer>> getAllClaimOwners() {
         return CompletableFuture.supplyAsync(() -> {
-            if (!connected) return new HashMap<>();
+            if (!connected) {
+                instance.info("§cMongoDB not connected, cannot get claim owners");
+                return new HashMap<>();
+            }
             
             try {
                 Map<String, Integer> owners = new HashMap<>();
                 
                 // Aggregate to count claims per owner
+                int totalClaims = 0;
                 for (Document doc : claimsCollection.find()) {
                     String ownerName = doc.getString("owner_name");
                     if (ownerName != null && !ownerName.equals("*")) {
                         owners.merge(ownerName, 1, Integer::sum);
+                        totalClaims++;
                     }
                 }
+                
+                instance.info("§aMongoDB: Found " + totalClaims + " claims from " + owners.size() + " owners");
                 
                 return owners;
             } catch (Exception e) {
@@ -433,12 +440,16 @@ public class MongoDBManager {
      */
     public CompletableFuture<List<Document>> getClaimsByOwnerName(String ownerName) {
         return CompletableFuture.supplyAsync(() -> {
-            if (!connected) return new ArrayList<>();
+            if (!connected) {
+                instance.info("§cMongoDB not connected, cannot get claims for owner: " + ownerName);
+                return new ArrayList<>();
+            }
             
             try {
                 List<Document> claims = new ArrayList<>();
                 Bson filter = Filters.eq("owner_name", ownerName);
                 claimsCollection.find(filter).into(claims);
+                instance.info("§aMongoDB: Found " + claims.size() + " claims for owner: " + ownerName);
                 return claims;
             } catch (Exception e) {
                 instance.info("§cFailed to get claims by owner name from MongoDB: " + e.getMessage());
@@ -527,6 +538,37 @@ public class MongoDBManager {
                 return owners;
             } catch (Exception e) {
                 instance.info("§cFailed to get claim owners with sales from MongoDB: " + e.getMessage());
+                e.printStackTrace();
+                return new HashMap<>();
+            }
+        }, executor);
+    }
+    
+    /**
+     * Gets all claim owners who are currently online on any server.
+     *
+     * @return CompletableFuture with map of owner names to claim counts
+     */
+    public CompletableFuture<Map<String, Integer>> getOnlineClaimOwners() {
+        return CompletableFuture.supplyAsync(() -> {
+            if (!connected) return new HashMap<>();
+            
+            try {
+                Map<String, Integer> owners = new HashMap<>();
+                
+                Set<String> onlinePlayers = new HashSet<>();
+                org.bukkit.Bukkit.getOnlinePlayers().forEach(p -> onlinePlayers.add(p.getName()));
+                
+                for (Document doc : claimsCollection.find()) {
+                    String ownerName = doc.getString("owner_name");
+                    if (ownerName != null && !ownerName.equals("*") && onlinePlayers.contains(ownerName)) {
+                        owners.merge(ownerName, 1, Integer::sum);
+                    }
+                }
+                
+                return owners;
+            } catch (Exception e) {
+                instance.info("§cFailed to get online claim owners from MongoDB: " + e.getMessage());
                 e.printStackTrace();
                 return new HashMap<>();
             }

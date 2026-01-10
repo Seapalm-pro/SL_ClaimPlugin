@@ -1977,6 +1977,31 @@ public class ClaimCommand implements CommandExecutor, TabCompleter {
             	player.sendMessage(instance.getLanguage().getMessage("cmd-no-permission"));
                 return;
             }
+            
+            boolean isLobbyServer = instance.getMultiServerManager() != null && 
+                                    instance.getMultiServerManager().isEnabled() &&
+                                    instance.getMultiServerManager().getConfig().isLobbyServer();
+            
+            if (isLobbyServer) {
+                instance.getMain().getClaimFromMongoByName(playerName, args[1]).thenAccept(claimData -> {
+                    if (claimData == null) {
+                        instance.executeEntitySync(player, () -> 
+                            player.sendMessage(instance.getLanguage().getMessage("claim-player-not-found")));
+                        return;
+                    }
+                    
+                    String serverOrigin = String.valueOf(claimData.get("server_origin"));
+                    String claimName = String.valueOf(claimData.get("claim_name"));
+                    
+                    instance.executeEntitySync(player, () -> {
+                        player.sendMessage(instance.getLanguage().getMessage("teleportation-to-other-server")
+                            .replace("%server%", serverOrigin));
+                        instance.getMain().goClaimCrossServer(player, playerName, claimName, serverOrigin);
+                    });
+                });
+                return;
+            }
+            
             Claim claim = instance.getMain().getClaimByName(args[1], player);
             if (claim == null) {
             	player.sendMessage(instance.getLanguage().getMessage("claim-player-not-found"));

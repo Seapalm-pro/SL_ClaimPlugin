@@ -258,15 +258,15 @@ public class ClaimsGui implements InventoryHolder {
         
         if (useMultiServer) {
             // Use MongoDB data for multi-server mode
+            instance.info("§eClaimsGui: Using MongoDB to get owners (filter: " + filter + ")");
             try {
                 switch (filter) {
                     case "sales":
                         return instance.getMultiServerManager().getMongoDBManager().getClaimOwnersWithSales().join();
                     case "online":
-                        // Online/offline filter doesn't work well with MongoDB, use local
-                        return instance.getMain().getClaimsOnlineOwners();
+                        return instance.getMultiServerManager().getMongoDBManager().getAllClaimOwners().join();
                     case "offline":
-                        return instance.getMain().getClaimsOfflineOwners();
+                        return instance.getMultiServerManager().getMongoDBManager().getAllClaimOwners().join();
                     default:
                         return instance.getMultiServerManager().getMongoDBManager().getAllClaimOwners().join();
                 }
@@ -277,6 +277,7 @@ public class ClaimsGui implements InventoryHolder {
             }
         }
         
+        instance.info("§eClaimsGui: Using local data to get owners (filter: " + filter + ")");
         return getLocalOwnersByFilter(filter, instance);
     }
     

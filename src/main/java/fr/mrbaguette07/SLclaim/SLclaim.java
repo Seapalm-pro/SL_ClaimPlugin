@@ -881,7 +881,10 @@ public class SLclaim extends JavaPlugin {
                             info("§eExpulsion : Les joueurs seront transférés vers un serveur lobby aléatoire parmi : " + 
                                 String.join(", ", multiServerManager.getConfig().getLobbyServers()));
                         }
-                        // Load claims from MongoDB if multi-server is enabled
+                        
+                        if (!multiServerManager.isLobbyServer()) {
+                            claimInstance.loadClaims();
+                        }
                         multiServerManager.reloadAllClaimsFromMongo();
                     } else {
                         // Load claims from local database
@@ -890,6 +893,9 @@ public class SLclaim extends JavaPlugin {
                 });
             } else {
                 if (multiServerManager.isEnabled()) {
+                    if (!multiServerManager.isLobbyServer()) {
+                        claimInstance.loadClaims();
+                    }
                     multiServerManager.reloadAllClaimsFromMongo();
                 } else {
                     claimInstance.loadClaims();
