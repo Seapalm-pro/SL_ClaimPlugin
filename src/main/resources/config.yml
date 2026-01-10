@@ -11,7 +11,7 @@ updates-notifications: true
 # Vous devez changer juste en dessous avec le nom de votre fichier de langue personnalisé pour appliquer les changements
 lang: "fr_FR.yml"
 
-# Database settings
+# Paramètres de base de données
 database: false
 database-settings:
   hostname: localhost
@@ -20,9 +20,9 @@ database-settings:
   username: root
   password: pass
 
-# Aliases
-# Configure the aliases of the main commands.
-# The permissions of these commands are the same.
+# Alias
+# Configurez les alias des commandes principales.
+# Les permissions de ces commandes sont les mêmes.
 command-aliases:
   claim:
     - /territory
@@ -31,32 +31,32 @@ command-aliases:
   claims:
     - /territories
     
-# Configure the aliases of the worlds.
+# Configurez les alias des mondes.
 world-aliases:
   world: Overworld
   world_nether: Nether
   world_the_end: End
 
 
-# ********************
-# *  Claim settings  *
-# ********************
+# ******************************
+# *  Paramètres des claims     *
+# ******************************
 
 
-# Autopurge claims
-# auto-purge-checking is in minutes (every x minutes the plugin will purge the claims)
-# auto-purge-time-without-login accepts this format : 5s, 5m, 5h, 5d, 5w (5 is for example)
+# Purge automatique des claims
+# auto-purge-checking est en minutes (toutes les x minutes le plugin purgera les claims)
+# auto-purge-time-without-login accepte ce format : 5s, 5m, 5h, 5d, 5w (5 est un exemple)
 auto-purge: true
 auto-purge-checking: 60
 auto-purge-time-without-login: 14d
 
-# Mode for claims per world
-# Modes:
-# - SURVIVAL: Classic mode, claims are available, you can build inside/outside your claims
-# - SURVIVAL_REQUIRING_CLAIMS: Advanced mode, claims are available, you can build only inside your claims
-# /!\ PERMS outside claims for this mode are configurable, see below (in permissions section)
-# - DISABLED: Claims are completely disabled
-# By default, if a world doesn't appear in the list, the plugin will use Survival mode.
+# Mode des claims par monde
+# Modes :
+# - SURVIVAL : Mode classique, les claims sont disponibles, vous pouvez construire à l'intérieur/extérieur de vos claims
+# - SURVIVAL_REQUIRING_CLAIMS : Mode avancé, les claims sont disponibles, vous pouvez construire uniquement à l'intérieur de vos claims
+# /!\ Les PERMS en dehors des claims pour ce mode sont configurables, voir ci-dessous (dans la section permissions)
+# - DISABLED : Les claims sont complètement désactivés
+# Par défaut, si un monde n'apparaît pas dans la liste, le plugin utilisera le mode Survival.
 claims-worlds-mode:
   world: SURVIVAL
   world_nether: SURVIVAL
@@ -64,149 +64,149 @@ claims-worlds-mode:
   example_world: DISABLED
   example_only_claims: SURVIVAL_REQUIRING_CLAIMS
 
-# Where the protection messages are displayed
-# Allowed type : ACTION_BAR (default), BOSSBAR, SUBTITLE, TITLE and CHAT
+# Où les messages de protection sont affichés
+# Types autorisés : ACTION_BAR (par défaut), BOSSBAR, SUBTITLE, TITLE et CHAT
 protection-message: ACTION_BAR
 
-# Keep chunks loaded even if no players in
+# Garder les chunks chargés même si aucun joueur n'est présent
 keep-chunks-loaded: false
 
-# Length max for claim name
+# Longueur maximale du nom de claim
 max-length-claim-name: 16
 
-# Length max for claim description
+# Longueur maximale de la description du claim
 max-length-claim-description: 50
 
-# Is there an invitation system for claims? If not, players can add anyone to their claims
+# Y a-t-il un système d'invitation pour les claims ? Si non, les joueurs peuvent ajouter n'importe qui à leurs claims
 claim-invitations-system: false
 
-# Expiration of an invitation (in seconds)
+# Expiration d'une invitation (en secondes)
 claim-invitation-expiration-delay: 120
 
-# Confirmation before claiming? (available with adding chunks system too)
+# Confirmation avant de claim ? (disponible aussi avec le système d'ajout de chunks)
 claim-confirmation: false
 
-# Display particles on the borders when claiming?
+# Afficher des particules sur les bordures lors du claim ?
 claim-particles: true
 
-# Display particles when a player can not enter
+# Afficher des particules quand un joueur ne peut pas entrer
 claim-particles-not-enter: true
 
-# Disable claim fly on damage (of any type)
+# Désactiver le vol dans les claims lors de dégâts (de tout type)
 claim-fly-disabled-on-damage: true
 
-# Send a message to player when auto fly enable the fly ?
+# Envoyer un message au joueur quand le vol automatique active le vol ?
 claim-fly-message-auto-fly: true
 
-# Enable/Disable the enter/leave message in the action bar
+# Activer/Désactiver le message d'entrée/sortie dans la barre d'action
 enter-leave-messages: true
 
-# Enable/Disable the enter/leave message in the title and subtitle
+# Activer/Désactiver le message d'entrée/sortie dans le titre et sous-titre
 enter-leave-title-messages: true
 
-# Enable/Disable the enter/leave message in the chat
+# Activer/Désactiver le message d'entrée/sortie dans le chat
 enter-leave-chat-messages: true
 
-# Should claims with the GuiTeleport setting disabled be displayed in /claims?
+# Les claims avec le paramètre GuiTeleport désactivé doivent-ils être affichés dans /claims ?
 claims-visitors-off-visible: true
 
-# Enable/Disable the economy system (sell/buy claims)
+# Activer/Désactiver le système économique (vente/achat de claims)
 economy: true
 
-# Max sell price for a claim
+# Prix de vente maximum pour un claim
 max-sell-price: 1000000000
 
-# If /claim is paid
+# Si /claim est payant
 claim-cost: false
-# If adding chunk to a claim is paid
+# Si l'ajout de chunk à un claim est payant
 chunk-cost: false
 
-# If claim cost is multiplied (for example if claim-cost-multipler = 2, first claim will be the claim-cost, 1000 for example,
-# the second claim will cost 2000, the third one 4000 ..)
+# Si le coût du claim est multiplié (par exemple si claim-cost-multiplier = 2, le premier claim coûtera le claim-cost, 1000 par exemple,
+# le deuxième claim coûtera 2000, le troisième 4000 ..)
 claim-cost-multiplier: false
-# Same for adding chunk
+# Pareil pour l'ajout de chunk
 chunk-cost-multiplier: false
 
-# Use formatted number for costs (10,000,000 = 10M for example)
+# Utiliser des nombres formatés pour les coûts (10 000 000 = 10M par exemple)
 use-formatted-number: true
 
-# Settings of announce
+# Paramètres d'annonce
 announce-sale:
 
-  # Announce sale in bossbar
+  # Annoncer la vente dans la bossbar
   bossbar: true
   bossbar-settings:
     color: RED
     style: SOLID
     
-  # Announce sale in chat
+  # Annoncer la vente dans le chat
   chat: true
   
-  # Announce sale in title/subtitle
+  # Annoncer la vente dans le titre/sous-titre
   title: true
   
-  # Announce sale in actionbar
+  # Annoncer la vente dans la barre d'action
   actionbar: true
 
-# Enable/Disable the bossbar when you are in a territory
+# Activer/Désactiver la bossbar quand vous êtes dans un territoire
 # Placeholders :
-# Use %owner% for owner's name (not for protected area)
-# Use %player% for player's name
-# Use %name% for claim's name
+# Utilisez %owner% pour le nom du propriétaire (pas pour les zones protégées)
+# Utilisez %player% pour le nom du joueur
+# Utilisez %name% pour le nom du claim
 bossbar: true
 bossbar-settings:
   color: YELLOW
   style: SOLID
 
-# A regular expression to control the allowed description of a claim.
-# The default value for the player-claims is '^[a-zA-Z0-9\s]+$' and only allows for alphanumerical strings, with spaces.
-# The default value for the protected areas is the same, but will also include the color symbols.
+# Expression régulière pour contrôler la description autorisée d'un claim.
+# La valeur par défaut pour les claims de joueurs est '^[a-zA-Z0-9\s]+$' et n'autorise que les chaînes alphanumériques, avec des espaces.
+# La valeur par défaut pour les zones protégées est la même, mais inclut aussi les symboles de couleur.
 description-regex:
   claims: '^[a-zA-Z0-9\s]+$'
   protected-areas: '^[a-zA-Z0-9&#\s]+$'
 
-# If delay > 0, can the player move
-# true = can move, false = cannot move
+# Si le délai > 0, le joueur peut-il bouger
+# true = peut bouger, false = ne peut pas bouger
 teleportation-delay-moving: false
 
-# Where the auto-map is sent.
-# Available types : CHAT and SCOREBOARD.
+# Où l'auto-map est envoyée.
+# Types disponibles : CHAT et SCOREBOARD.
 map-type: SCOREBOARD
 
-# Location when a player is banned/kicked from a claim
+# Emplacement quand un joueur est banni/expulsé d'un claim
 expulsion-location: {}
 
 
-# ******************
-# *  Map settings  *
-# ******************
+# ****************************
+# *  Paramètres de la carte  *
+# ****************************
 
 
-# Bluemap support
+# Support Bluemap
 bluemap: true
 bluemap-settings:
   claim-border-color: FFFFFF
   claim-fill-color: A5A5A5
-  claim-hover-text: "%claim-name% - Owner: %owner%"
+  claim-hover-text: "%claim-name% - Propriétaire: %owner%"
 
 
-# **************************
-# *  Permissions settings  *
-# **************************
+# *********************************
+# *  Paramètres des permissions   *
+# *********************************
 
 
-# Groups settings with permissions
-# 0 for infinite claims
-# 0 for no delay (in seconds)
-# 0 for unlimited members
-# Be careful, if you set the claim radius to 0, there is a risk of lag if players claim with a too large radius
-# Be careful of max-radius-claims and max-chunks-per-claim, one depends of the other, for example :
-# if you put 4 to max-chuns-per-claim and 1 to max-radius-claims, players cannot use radius claim because the max chunks is set to 4
-# it must be 9 for radius 1
-# same for max-chunks-total
+# Paramètres des groupes avec permissions
+# 0 pour des claims illimités
+# 0 pour aucun délai (en secondes)
+# 0 pour des membres illimités
+# Attention, si vous mettez le rayon de claim à 0, il y a un risque de lag si les joueurs claim avec un rayon trop grand
+# Attention à max-radius-claims et max-chunks-per-claim, l'un dépend de l'autre, par exemple :
+# si vous mettez 4 à max-chunks-per-claim et 1 à max-radius-claims, les joueurs ne peuvent pas utiliser le claim par rayon car le max chunks est à 4
+# il doit être à 9 pour un rayon de 1
+# pareil pour max-chunks-total
 groups:
   admin:
-    permission: scs.group.admin
+    permission: slclaim.group.admin
     max-claims: 0
     max-radius-claims: 0
     teleportation-delay: 0
@@ -218,8 +218,8 @@ groups:
     max-chunks-total: 0
     chunk-cost: 0
     chunk-cost-multiplier: 0
-  vip: # Example
-    permission: scs.group.vip
+  vip: # Exemple
+    permission: slclaim.group.vip
     max-claims: 15
     max-radius-claims: 2
     teleportation-delay: 0
@@ -244,17 +244,17 @@ groups:
     chunk-cost: 0
     chunk-cost-multiplier: 0
     
-# Players settings
-# 0 for infinite claims
-# 0 for no delay (in seconds)
-# 0 for unlimited members
-# Be careful, if you set the claim radius to 0, there is a risk of lag if players claim with a too large radius
-# Be careful of max-radius-claims and max-chunks-per-claim, one depends of the other, for example :
-# if you put 4 to max-chuns-per-claim and 1 to max-radius-claims, players cannot use radius claim because the max chunks is set to 4
-# it must be 9 for radius 1
-# same for max-chunks-total
+# Paramètres des joueurs
+# 0 pour des claims illimités
+# 0 pour aucun délai (en secondes)
+# 0 pour des membres illimités
+# Attention, si vous mettez le rayon de claim à 0, il y a un risque de lag si les joueurs claim avec un rayon trop grand
+# Attention à max-radius-claims et max-chunks-per-claim, l'un dépend de l'autre, par exemple :
+# si vous mettez 4 à max-chunks-per-claim et 1 à max-radius-claims, les joueurs ne peuvent pas utiliser le claim par rayon car le max chunks est à 4
+# il doit être à 9 pour un rayon de 1
+# pareil pour max-chunks-total
 players: {}
-  # Xyness:
+  # MrBaguette07:
   # max-claims: 0
   # max-radius-claims: 0
   # teleportation-delay: 0
@@ -268,12 +268,12 @@ players: {}
   # chunk-cost-multiplier: 0
 
 
-# *************************
-# *  Protection settings  *
-# *************************
+# *********************************
+# *  Paramètres de protection     *
+# *********************************
 
 
-# Enable/Disable settings, if you put "false", players cannot change this setting is their claims
+# Activer/Désactiver les paramètres, si vous mettez "false", les joueurs ne peuvent pas modifier ce paramètre dans leurs claims
 status-settings:
   Build: true
   Destroy: true
@@ -309,7 +309,7 @@ status-settings:
   Elytra: true
   Windcharges: true
 
-# List of default values for the settings
+# Liste des valeurs par défaut pour les paramètres
 default-values-settings:
   Members:
     Build: true
@@ -375,7 +375,7 @@ default-values-settings:
     Monsters: true
     Pvp: false
 
-# List of permissions to use when world mode is SurvivalRequiringClaims (outside the claims)
+# Liste des permissions à utiliser quand le mode du monde est SurvivalRequiringClaims (en dehors des claims)
 permissions-on-SurvivalRequiringClaims:
   Build: false
   Destroy: false
@@ -407,7 +407,7 @@ permissions-on-SurvivalRequiringClaims:
   Monsters: true
   Pvp: false
 
-# List of blocked containers for the setting "Interact with blocks"
+# Liste des conteneurs bloqués pour le paramètre "Interagir avec les blocs"
 # https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html
 blocked-interact-blocks:
 - FURNACE
@@ -515,7 +515,7 @@ blocked-interact-blocks:
 - LOOM
 - SMOKER
 
-# List of blocked items for the setting "Use items"
+# Liste des objets bloqués pour le paramètre "Utiliser des objets"
 # https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html
 blocked-items:
 - ENDER_PEARL
@@ -534,7 +534,7 @@ blocked-items:
 - FISHING_ROD
 - LEAD
 
-# List of blocked entity type for the setting "Entities"
+# Liste des types d'entités bloqués pour le paramètre "Entités"
 # https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/entity/EntityType.html
 blocked-entities:
 - VILLAGER
@@ -552,17 +552,17 @@ blocked-entities:
 - STRIDER
 - LLAMA
 
-# List of blocked blocks for the setting "Destroy special blocks"
+# Liste des blocs bloqués pour le paramètre "Détruire des blocs spéciaux"
 # https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html
 special-blocks:
 - SPAWNER
 
-# List of ignored blocks for the settings "Destroy"
+# Liste des blocs ignorés pour le paramètre "Détruire"
 # https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html
 ignored-break-blocks:
 - BEDROCK
 
-# List of ignored blocks for the settings "Build"
+# Liste des blocs ignorés pour le paramètre "Construire"
 # https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html
 ignored-place-blocks:
 - BEDROCK

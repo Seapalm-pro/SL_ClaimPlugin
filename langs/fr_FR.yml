@@ -736,34 +736,34 @@ help-command:
     §bSyntaxe : §f/parea kick <*|claim-name> <player>
     §bDescription : §fExpulser physiquement un joueur d'une zone protégée
   scs-transfer: |
-    §bSyntaxe : §f/scs transfer
+    §bSyntaxe : §f/slclaim transfer
     §bDescription : §fTransférer la base de données locale vers la base de données distante
   scs-player: |
-    §bSyntaxe : §f/scs player <tp|unclaim|main|list> <player> [<claim>]
+    §bSyntaxe : §f/slclaim player <tp|unclaim|main|list> <player> [<claim>]
     §bDescription : §fGérer les claims des joueurs
   scs-cplayer: |
-    §bSyntaxe : §f/scs cplayer <add-limit|add-radius|add-members|set-limit|set-radius|set-delay|set-members|set-claim-cost|set-claim-cost-multiplier|set-claim-distance|set-max-chunks-total> <args>
+    §bSyntaxe : §f/slclaim cplayer <add-limit|add-radius|add-members|set-limit|set-radius|set-delay|set-members|set-claim-cost|set-claim-cost-multiplier|set-claim-distance|set-max-chunks-total> <args>
     §bDescription : §fGérer les paramètres des joueurs
   scs-group: |
-    §bSyntaxe : §f/scs group <add-limit|add-radius|add-members|set-limit|set-radius|set-delay|set-members|set-claim-cost|set-claim-cost-multiplier|set-claim-distance|set-max-chunks-total> <args>
+    §bSyntaxe : §f/slclaim group <add-limit|add-radius|add-members|set-limit|set-radius|set-delay|set-members|set-claim-cost|set-claim-cost-multiplier|set-claim-distance|set-max-chunks-total> <args>
     §bDescription : §fGérer les paramètres et claims des groupes
   scs-forceunclaim: |
-    §bSyntaxe : §f/scs forceunclaim <claim>
+    §bSyntaxe : §f/slclaim forceunclaim <claim>
     §bDescription : §fForcer l'unclaim d'un claim
   scs-setowner: |
-    §bSyntaxe : §f/scs setowner <claim> <player>
+    §bSyntaxe : §f/slclaim setowner <claim> <player>
     §bDescription : §fDéfinir le propriétaire d'un claim
   scs-set-lang: |
-    §bSyntaxe : §f/scs set-lang <language>
+    §bSyntaxe : §f/slclaim set-lang <language>
     §bDescription : §fDéfinir la langue du plugin
   scs-reset-all-player-claims-settings: |
-    §bSyntaxe : §f/scs reset-all-player-claims-settings
+    §bSyntaxe : §f/slclaim reset-all-player-claims-settings
     §bDescription : §fRéinitialiser tous les paramètres des claims des joueurs
   scs-reset-all-admin-claims-settings: |
-    §bSyntaxe : §f/scs reset-all-admin-claims-settings
+    §bSyntaxe : §f/slclaim reset-all-admin-claims-settings
     §bDescription : §fRéinitialiser tous les paramètres des claims admin
   scs-admin: |
-    §bSyntaxe : §f/scs admin
+    §bSyntaxe : §f/slclaim admin
     §bDescription : §fOuvrir l'interface admin
   next-page: §7Page %page% - cliquez pour accéder à la page suivante
   previous-page: §7Page %page% - cliquez pour accéder à la page précédente

@@ -1,0 +1,157 @@
+# ************************************
+# *  Configuration RTP (Random TP)   *
+# ************************************
+
+# Activer ou désactiver la commande /rtp
+enabled: true
+
+# Mondes autorisés pour le RTP
+# Laissez vide pour autoriser tous les mondes
+allowed-worlds:
+  - world
+
+# Coordonnées minimales et maximales pour la téléportation
+# Le joueur sera téléporté aléatoirement dans cette zone
+coordinates:
+  min-x: -10000
+  max-x: 10000
+  min-z: -10000
+  max-z: 10000
+
+# Hauteur de recherche pour un emplacement sûr
+# Le plugin cherchera un bloc solide entre ces hauteurs
+height:
+  min-y: 60
+  max-y: 320
+
+# Nombre maximum de tentatives pour trouver un emplacement sûr
+max-attempts: 50
+
+# Blocs dangereux (le joueur ne sera pas téléporté sur ces blocs)
+unsafe-blocks:
+  - LAVA
+  - WATER
+  - FIRE
+  - CACTUS
+  - MAGMA_BLOCK
+  - CAMPFIRE
+  - SOUL_CAMPFIRE
+  - SWEET_BERRY_BUSH
+  - WITHER_ROSE
+  - POWDER_SNOW
+
+# Téléporter dans un claim ?
+# Si false, le joueur ne sera jamais téléporté dans un claim existant
+allow-tp-in-claims: false
+
+# ************************************
+# *  Système de délai (warmup)       *
+# ************************************
+
+# Délai par défaut avant la téléportation (en secondes)
+# 0 = téléportation instantanée
+default-warmup: 5
+
+# Annuler la téléportation si le joueur bouge ?
+cancel-on-move: true
+
+# Distance de mouvement autorisée avant annulation (en blocs)
+# Utilisé uniquement si cancel-on-move est true
+move-tolerance: 1.5
+
+# Annuler la téléportation si le joueur prend des dégâts ?
+cancel-on-damage: true
+
+# ************************************
+# *  Système de cooldown             *
+# ************************************
+
+# Cooldown par défaut entre chaque utilisation (en secondes)
+# 0 = pas de cooldown
+default-cooldown: 300
+
+# ************************************
+# *  Permissions et délais           *
+# ************************************
+
+# Système de permissions avec délais personnalisés
+# Format: permission: délai_warmup_en_secondes
+# Le plugin vérifie les permissions dans l'ordre et applique le premier trouvé
+#
+# Permission spéciale: slclaim.rtp.bypass - Aucun délai (téléportation instantanée)
+# Permission spéciale: slclaim.rtp.nocooldown - Pas de cooldown
+#
+warmup-permissions:
+  slclaim.rtp.vip: 3
+  slclaim.rtp.mvp: 2
+  slclaim.rtp.elite: 1
+  slclaim.rtp.staff: 0
+
+# Cooldowns personnalisés par permission
+# Format: permission: cooldown_en_secondes
+cooldown-permissions:
+  slclaim.rtp.vip: 180
+  slclaim.rtp.mvp: 120
+  slclaim.rtp.elite: 60
+  slclaim.rtp.staff: 0
+
+# ************************************
+# *  Effets visuels                  *
+# ************************************
+
+# Afficher des particules pendant le warmup ?
+particles-enabled: true
+
+# Type de particule (PORTAL, END_ROD, ENCHANT, etc.)
+particle-type: PORTAL
+
+# Jouer un son lors de la téléportation ?
+sound-enabled: true
+
+# Son de début de téléportation
+warmup-sound: BLOCK_NOTE_BLOCK_PLING
+
+# Son de fin de téléportation
+teleport-sound: ENTITY_ENDERMAN_TELEPORT
+
+# Afficher un titre pendant le warmup ?
+title-enabled: true
+
+# ************************************
+# *  Coût de téléportation           *
+# ************************************
+
+# Activer le coût en argent (nécessite Vault)
+cost-enabled: false
+
+# Coût par défaut de la téléportation
+default-cost: 100.0
+
+# Coûts personnalisés par permission
+# Format: permission: coût
+cost-permissions:
+  slclaim.rtp.vip: 50.0
+  slclaim.rtp.mvp: 25.0
+  slclaim.rtp.elite: 10.0
+  slclaim.rtp.staff: 0.0
+
+# ************************************
+# *  Mode Multi-Serveur (Proxy)      *
+# ************************************
+# Configuration pour les réseaux avec BungeeCord/Velocity
+# Si activé, /rtp sur un serveur LOBBY transférera le joueur vers un serveur survie
+
+# Activer le mode multi-serveur pour RTP
+# Note: Cela fonctionne indépendamment du multiserver.yml
+multiserver-rtp-enabled: false
+
+# Type de ce serveur pour RTP: LOBBY ou SURVIVAL
+# LOBBY = transférer vers un serveur survie avant de faire le RTP
+# SURVIVAL = faire le RTP directement sur ce serveur
+multiserver-rtp-server-type: SURVIVAL
+
+# Liste des serveurs survie disponibles (noms BungeeCord/Velocity)
+# Le plugin choisira aléatoirement un serveur dans cette liste
+multiserver-rtp-survival-servers:
+  - "survival-1"
+  - "survival-2"

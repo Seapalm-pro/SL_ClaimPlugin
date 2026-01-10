@@ -873,37 +873,37 @@ help-command:
     §bSyntax : §f/parea kick <*|claim-name> <player>
     §bDescription : §fKick a player physically from a protected area
   scs-transfer: |
-    §bSyntax : §f/scs transfer
+    §bSyntax : §f/slclaim transfer
     §bDescription : §fTransfer local db to distant db
   scs-player: |
-    §bSyntax : §f/scs player <tp|unclaim|main|list> <player> [<claim>]
+    §bSyntax : §f/slclaim player <tp|unclaim|main|list> <player> [<claim>]
     §bDescription : §fManage player claims
   scs-cplayer: |
-    §bSyntax : §f/scs cplayer <add-limit|add-radius|add-members|set-limit|set-radius|set-delay|set-members|set-claim-cost|set-claim-cost-multiplier|set-claim-distance|set-max-chunks-total> <args>
+    §bSyntax : §f/slclaim cplayer <add-limit|add-radius|add-members|set-limit|set-radius|set-delay|set-members|set-claim-cost|set-claim-cost-multiplier|set-claim-distance|set-max-chunks-total> <args>
     §bDescription : §fManage player settings
   scs-group: |
-    §bSyntax : §f/scs group <add-limit|add-radius|add-members|set-limit|set-radius|set-delay|set-members|set-claim-cost|set-claim-cost-multiplier|set-claim-distance|set-max-chunks-total> <args>
+    §bSyntax : §f/slclaim group <add-limit|add-radius|add-members|set-limit|set-radius|set-delay|set-members|set-claim-cost|set-claim-cost-multiplier|set-claim-distance|set-max-chunks-total> <args>
     §bDescription : §fManage group settings and claims
   scs-forceunclaim: |
-    §bSyntax : §f/scs forceunclaim <claim>
+    §bSyntax : §f/slclaim forceunclaim <claim>
     §bDescription : §fForcefully unclaim a claim
   scs-setowner: |
-    §bSyntax : §f/scs setowner <claim> <player>
+    §bSyntax : §f/slclaim setowner <claim> <player>
     §bDescription : §fSet the owner of a claim
   scs-set-lang: |
-    §bSyntax : §f/scs set-lang <language>
+    §bSyntax : §f/slclaim set-lang <language>
     §bDescription : §fSet the language for the plugin
   scs-reset-all-player-claims-settings: |
-    §bSyntax : §f/scs reset-all-player-claims-settings
+    §bSyntax : §f/slclaim reset-all-player-claims-settings
     §bDescription : §fReset all player claim settings to default
   scs-reset-all-admin-claims-settings: |
-    §bSyntax : §f/scs reset-all-admin-claims-settings
+    §bSyntax : §f/slclaim reset-all-admin-claims-settings
     §bDescription : §fReset all admin claim settings to default
   scs-admin: |
-    §bSyntax : §f/scs admin
+    §bSyntax : §f/slclaim admin
     §bDescription : §fOpen the admin GUI
   scs-setexpulsionlocation: |
-    §bSyntax : §f/scs setexpulsionlocation
+    §bSyntax : §f/slclaim setexpulsionlocation
     §bDescription : §fSet the expulsion location
   next-page: §7Page %page% - click to access next page
   previous-page: §7Page %page% - click to access previous page
@@ -1016,3 +1016,29 @@ bedrock-chunk-confirm-info-lore-economy: "Price: §6%price%%money-symbol%"
 bedrock-chunk-confirm-info-lore: "Make a choice for the claim"
 bedrock-unclaim-confirm-info-lore: "Make a choice for the claim"
 
+
+# > RTP (Random Teleport) messages
+
+rtp-disabled: "§cRandom teleportation is disabled on this server."
+rtp-no-permission: "§cYou don't have permission to use this command."
+rtp-world-not-allowed: "§cRandom teleportation is not allowed in the world §e%world%§c."
+rtp-already-teleporting: "§cYou already have a teleportation in progress. Please wait."
+rtp-cooldown: "§cYou must wait §e%time% §cbefore you can teleport again."
+rtp-not-enough-money: "§cYou don't have enough money. Cost: §e%cost%§c (Balance: §e%balance%§c)"
+rtp-searching: "§eSearching for a safe location..."
+rtp-searching-location: "§eWe are trying to find a location..."
+rtp-no-safe-location: "§cNo safe location was found. Please try again."
+rtp-no-location-found: "§cWe couldn't find an available location, please try again later."
+rtp-not-survival-server: "§cRandom teleportation is only available on Survival servers."
+rtp-warmup-start: "§6Teleporting in §e%time% §6seconds. Don't move!"
+rtp-cancelled-move: "§cTeleportation cancelled: you moved."
+rtp-cancelled-damage: "§cTeleportation cancelled: you took damage."
+rtp-cost-deducted: "§7Teleportation cost: §e%cost%"
+rtp-success: "§aTeleportation successful! You are now at §e%x%§a, §e%y%§a, §e%z%§a."
+rtp-transferring-to-server: "§6Transferring to survival server..."
+rtp-no-survival-server-available: "§cNo survival server is available at the moment. Please try again later."
+
+# > Multi-server teleportation messages
+
+server-offline: "§cThe server hosting this claim is currently offline. Please try again later."
+teleportation-to-other-server: "§6Teleporting to server §e%server%§6..."

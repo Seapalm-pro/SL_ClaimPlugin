@@ -124,3 +124,17 @@ survival-settings:
   
   # Annoncer les ventes de claims à tous les serveurs
   broadcast-sales: true
+
+# =====================================
+# Paramètres d'expulsion
+# =====================================
+# Configuration pour l'expulsion des joueurs bannis des claims
+
+expulsion:
+  # Activer la téléportation vers un serveur lobby lors d'une expulsion
+  # Si activé, le joueur sera envoyé vers l'un des serveurs lobby configurés dans servers.lobby (aléatoire)
+  # Si désactivé, le joueur sera téléporté à l'emplacement d'expulsion local
+  teleport-to-lobby: true
+  
+  # Message envoyé au joueur lors de l'expulsion vers le lobby
+  expulsion-message: "&cVous avez été expulsé du claim et transféré au lobby."

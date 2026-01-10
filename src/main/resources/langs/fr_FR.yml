@@ -736,34 +736,34 @@ help-command:
     §bSyntaxe : §f/parea kick <*|claim-name> <player>
     §bDescription : §fExpulser physiquement un joueur d'une zone protégée
   scs-transfer: |
-    §bSyntaxe : §f/scs transfer
+    §bSyntaxe : §f/slclaim transfer
     §bDescription : §fTransférer la base de données locale vers la base de données distante
   scs-player: |
-    §bSyntaxe : §f/scs player <tp|unclaim|main|list> <player> [<claim>]
+    §bSyntaxe : §f/slclaim player <tp|unclaim|main|list> <player> [<claim>]
     §bDescription : §fGérer les claims des joueurs
   scs-cplayer: |
-    §bSyntaxe : §f/scs cplayer <add-limit|add-radius|add-members|set-limit|set-radius|set-delay|set-members|set-claim-cost|set-claim-cost-multiplier|set-claim-distance|set-max-chunks-total> <args>
+    §bSyntaxe : §f/slclaim cplayer <add-limit|add-radius|add-members|set-limit|set-radius|set-delay|set-members|set-claim-cost|set-claim-cost-multiplier|set-claim-distance|set-max-chunks-total> <args>
     §bDescription : §fGérer les paramètres des joueurs
   scs-group: |
-    §bSyntaxe : §f/scs group <add-limit|add-radius|add-members|set-limit|set-radius|set-delay|set-members|set-claim-cost|set-claim-cost-multiplier|set-claim-distance|set-max-chunks-total> <args>
+    §bSyntaxe : §f/slclaim group <add-limit|add-radius|add-members|set-limit|set-radius|set-delay|set-members|set-claim-cost|set-claim-cost-multiplier|set-claim-distance|set-max-chunks-total> <args>
     §bDescription : §fGérer les paramètres et claims des groupes
   scs-forceunclaim: |
-    §bSyntaxe : §f/scs forceunclaim <claim>
+    §bSyntaxe : §f/slclaim forceunclaim <claim>
     §bDescription : §fForcer l'unclaim d'un claim
   scs-setowner: |
-    §bSyntaxe : §f/scs setowner <claim> <player>
+    §bSyntaxe : §f/slclaim setowner <claim> <player>
     §bDescription : §fDéfinir le propriétaire d'un claim
   scs-set-lang: |
-    §bSyntaxe : §f/scs set-lang <language>
+    §bSyntaxe : §f/slclaim set-lang <language>
     §bDescription : §fDéfinir la langue du plugin
   scs-reset-all-player-claims-settings: |
-    §bSyntaxe : §f/scs reset-all-player-claims-settings
+    §bSyntaxe : §f/slclaim reset-all-player-claims-settings
     §bDescription : §fRéinitialiser tous les paramètres des claims des joueurs
   scs-reset-all-admin-claims-settings: |
-    §bSyntaxe : §f/scs reset-all-admin-claims-settings
+    §bSyntaxe : §f/slclaim reset-all-admin-claims-settings
     §bDescription : §fRéinitialiser tous les paramètres des claims admin
   scs-admin: |
-    §bSyntaxe : §f/scs admin
+    §bSyntaxe : §f/slclaim admin
     §bDescription : §fOuvrir l'interface admin
   next-page: §7Page %page% - cliquez pour accéder à la page suivante
   previous-page: §7Page %page% - cliquez pour accéder à la page précédente
@@ -793,3 +793,30 @@ talking-now-in-public: "§fVous parlez maintenant dans le §achat public§f."
 cannot-claim-on-lobby-server: "§cVous ne pouvez pas créer de claim sur un serveur lobby. Veuillez rejoindre un serveur survie."
 multiserver-sync-failed: "§cÉchec de la synchronisation des données. Veuillez réessayer plus tard."
 multiserver-not-connected: "§cLe système multi-serveur n'est pas connecté. Veuillez contacter un administrateur."
+
+
+# > Messages RTP (Téléportation aléatoire)
+
+rtp-disabled: "§cLa téléportation aléatoire est désactivée sur ce serveur."
+rtp-no-permission: "§cVous n'avez pas la permission d'utiliser cette commande."
+rtp-world-not-allowed: "§cLa téléportation aléatoire n'est pas autorisée dans le monde §e%world%§c."
+rtp-already-teleporting: "§cVous avez déjà une téléportation en cours. Veuillez patienter."
+rtp-cooldown: "§cVous devez attendre §e%time% §cavant de pouvoir vous téléporter à nouveau."
+rtp-not-enough-money: "§cVous n'avez pas assez d'argent. Coût : §e%cost%§c (Solde : §e%balance%§c)"
+rtp-searching: "§eRecherche d'un emplacement sûr..."
+rtp-searching-location: "§eNous essayons de trouver un emplacement..."
+rtp-no-safe-location: "§cAucun emplacement sûr n'a été trouvé. Veuillez réessayer."
+rtp-no-location-found: "§cNous n'avons pas trouvé d'emplacement disponible, réessayez plus tard."
+rtp-not-survival-server: "§cLa téléportation aléatoire n'est disponible que sur le serveur Survival."
+rtp-warmup-start: "§6Téléportation dans §e%time% §6secondes. Ne bougez pas !"
+rtp-cancelled-move: "§cTéléportation annulée : vous avez bougé."
+rtp-cancelled-damage: "§cTéléportation annulée : vous avez pris des dégâts."
+rtp-cost-deducted: "§7Coût de la téléportation : §e%cost%"
+rtp-success: "§aTéléportation réussie ! Vous êtes maintenant en §e%x%§a, §e%y%§a, §e%z%§a."
+rtp-transferring-to-server: "§6Transfert vers un serveur survie..."
+rtp-no-survival-server-available: "§cAucun serveur survie n'est disponible pour le moment. Veuillez réessayer plus tard."
+
+# > Messages de téléportation multi-serveur
+
+server-offline: "§cLe serveur hébergeant ce claim est actuellement hors ligne. Veuillez réessayer plus tard."
+teleportation-to-other-server: "§6Téléportation vers le serveur §e%server%§6..."

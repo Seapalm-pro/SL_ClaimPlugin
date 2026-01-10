@@ -1,6 +1,6 @@
 name: SLclaim
 version: 1.12.3.3
-main: fr.mrbaguette07.SCS.SLclaim
+main: fr.mrbaguette07.SLclaim.SLclaim
 authors: [MrBaguette07]
 softdepend: [PlaceholderAPI, WorldGuard, Vault, BlueMap, floodgate, ItemsAdder]
 api-version: 1.18
@@ -9,40 +9,66 @@ commands:
   claim:
     description: Commande de base pour les claims
     aliases: []
-    permission: scs.command.claim
+    permission: slclaim.command.claim
   claims:
     description: Tous les claims
     aliases: []
-    permission: scs.command.claims
+    permission: slclaim.command.claims
   unclaim:
     description: Supprimer votre territoire
     aliases: []
-    permission: scs.command.unclaim
+    permission: slclaim.command.unclaim
     default: true
-  scs:
+  slclaim:
     description: Commandes administrateur
-    permission: scs.admin
+    aliases: [scs]
+    permission: slclaim.admin
   protectedarea:
     aliases: [parea,pa]
     description: Commandes des zones protégées
-    permission: scs.admin
+    permission: slclaim.admin
+  rtp:
+    aliases: [randomtp, randomteleport]
+    description: Téléportation aléatoire
+    permission: slclaim.rtp.use
     
 permissions:
-  scs.command.claim:
+  slclaim.command.claim:
     description: Commande de base pour les claims
     default: true
-  scs.command.claim.*:
+  slclaim.command.claim.*:
     description: Commande de base pour les claims
     default: true
-  scs.command.unclaim:
+  slclaim.command.unclaim:
     description: Supprimer votre territoire
     default: true
-  scs.admin:
+  slclaim.admin:
     description: Commandes administrateur
     default: op
-  scs.command.claims:
+  slclaim.command.claims:
     description: Interface des claims
     default: true
-  scs.setting.*:
+  slclaim.setting.*:
     description: Permissions des paramètres
     default: true
+  slclaim.rtp.use:
+    description: Permet d'utiliser /rtp
+    default: true
+  slclaim.rtp.bypass:
+    description: Bypass le délai de téléportation RTP
+    default: op
+  slclaim.rtp.nocooldown:
+    description: Pas de cooldown pour RTP
+    default: op
+  slclaim.rtp.vip:
+    description: Délai réduit pour VIP
+    default: false
+  slclaim.rtp.mvp:
+    description: Délai réduit pour MVP
+    default: false
+  slclaim.rtp.elite:
+    description: Délai réduit pour Elite
+    default: false
+  slclaim.rtp.staff:
+    description: Aucun délai pour Staff
+    default: op

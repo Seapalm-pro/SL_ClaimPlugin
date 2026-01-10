@@ -80,7 +80,7 @@ tasks.jar {
     archiveVersion.set(version.toString())
     
     manifest {
-        attributes["Main-Class"] = "fr.mrbaguette07.SCS.SLclaim"
+        attributes["Main-Class"] = "fr.mrbaguette07.SLclaim.SLclaim"
     }
     
     // Inclusion des dépendances
@@ -94,7 +94,7 @@ tasks.jar {
 }
 
 application {
-    mainClass.set("fr.mrbaguette07.SCS.SLclaim")
+    mainClass.set("fr.mrbaguette07.SLclaim.SLclaim")
 }
 
 ktor {
