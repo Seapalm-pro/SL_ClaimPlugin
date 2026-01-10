@@ -2250,6 +2250,11 @@ public class ClaimMain {
 
         instance.info(getNumberSeparate(String.valueOf(i[0]))+"/"+getNumberSeparate(String.valueOf(max_i))+" claims chargés.");
         instance.info("> dont "+getNumberSeparate(String.valueOf(protected_areas_count))+" zones protégées.");
+
+        if (instance.getSettings().getBooleanSetting("bluemap") && instance.getBluemap() != null) {
+            instance.getBluemap().load();
+        }
+        
         return;
     }
 
@@ -4131,6 +4136,11 @@ public class ClaimMain {
     	                    preparedStatement.setString(3, claim.getName());
     	                    preparedStatement.executeUpdate();
     	                }
+    	                
+    	                if (instance.getMultiServerManager() != null && instance.getMultiServerManager().isEnabled()) {
+    	                    instance.getMultiServerManager().broadcastChunkRemove(claim, uuid, chunk_default);
+    	                }
+    	                
     	                return true;
     	            } catch (SQLException e) {
     	                e.printStackTrace();
@@ -4182,6 +4192,12 @@ public class ClaimMain {
 	                    preparedStatement.setString(3, claim.getName());
 	                    preparedStatement.executeUpdate();
 	                }
+	                
+	                if (instance.getMultiServerManager() != null && instance.getMultiServerManager().isEnabled()) {
+	                    String chunkInfo = chunk.getWorld().getName() + ";" + chunk.getX() + ";" + chunk.getZ();
+	                    instance.getMultiServerManager().broadcastChunkRemove(claim, uuid, chunkInfo);
+	                }
+	                
 	                return true;
 	            } catch (SQLException e) {
 	                e.printStackTrace();
@@ -4239,6 +4255,12 @@ public class ClaimMain {
 	                    preparedStatement.setString(3, claim.getName());
 	                    preparedStatement.executeUpdate();
 	                }
+	                
+	                if (instance.getMultiServerManager() != null && instance.getMultiServerManager().isEnabled()) {
+	                    String chunkInfo = chunk.getWorld().getName() + ";" + chunk.getX() + ";" + chunk.getZ();
+	                    instance.getMultiServerManager().broadcastChunkAdd(claim, uuid, chunkInfo);
+	                }
+	                
 	                return true;
 	            } catch (SQLException e) {
 	                e.printStackTrace();
@@ -4314,6 +4336,14 @@ public class ClaimMain {
 	                	};
 	                	preparedStatement.executeBatch();
 	                }
+	                
+	                if (instance.getMultiServerManager() != null && instance.getMultiServerManager().isEnabled()) {
+	                    instance.getMultiServerManager().broadcastClaimUpdate(claim1, uuid);
+	                    for (Claim claim : claims) {
+	                        instance.getMultiServerManager().broadcastClaimDelete(uuid, claim.getId(), claim.getName());
+	                    }
+	                }
+	                
 	                return true;
 	            } catch (SQLException e) {
 	                e.printStackTrace();

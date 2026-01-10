@@ -56,7 +56,6 @@ public class ClaimBluemap {
 	public ClaimBluemap(BlueMapAPI api, SLclaim instance) {
 		this.api = api;
 		this.instance = instance;
-		load();
 	}
 	
 	
