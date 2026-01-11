@@ -191,14 +191,14 @@ public class ClaimChunksGui implements InventoryHolder {
 	            // Set new i
 	            i = slots_i.get(count2);
 	            count2++;
-	
-	            // Add the chunk to map string for gui clicking
-	            cPlayer.addMapString(i, String.valueOf(chunk.getWorld().getName()+";"+chunk.getX()+";"+chunk.getZ()));
-	            
-	            // Prepare title for current chunk
-	            String title = instance.getLanguage().getMessage("chunk-title").replace("%coords%", String.valueOf(chunk.getWorld().getName()+", X:"+chunk.getX()+", Z:"+chunk.getZ()));
-	            
-	            // Set chunk item
+            cPlayer.addMapString(i, String.valueOf(chunk.getWorld().getName()+";"+chunk.getX()+";"+chunk.getZ()));
+            
+            // Prepare title for current chunk
+            String title = instance.getLanguage().getMessage("chunk-title")
+                    .replace("%number%", String.valueOf(count))
+                    .replace("%coords%", String.valueOf(chunk.getWorld().getName()+", X:"+chunk.getX()+", Z:"+chunk.getZ()));
+            
+            // Set chunk item
 	            ItemStack item = new ItemStack(Material.RED_MUSHROOM_BLOCK, 1);
 	            ItemMeta meta = item.getItemMeta();
 	            meta.setDisplayName(title);
