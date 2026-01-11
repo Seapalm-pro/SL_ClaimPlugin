@@ -52,7 +52,7 @@ public class ClaimPlaceholdersExpansion extends PlaceholderExpansion {
 
     @Override
     public String getIdentifier() {
-        return "scs";
+        return "slclaim";
     }
 
     @Override
@@ -135,7 +135,6 @@ public class ClaimPlaceholdersExpansion extends PlaceholderExpansion {
                 
             case "player_claim_cost_multiplier":
                 return String.valueOf(cPlayer.getMultiplier());
-                
             case "claim_owner":
                 chunk = player.getLocation().getChunk();
                 if (instance.getMain().checkIfClaimExists(chunk)) {
@@ -177,6 +176,14 @@ public class ClaimPlaceholdersExpansion extends PlaceholderExpansion {
                     return String.valueOf(claim.getMembers().size());
                 }
                 return instance.getLanguage().getMessage("claim_members_count-if-no-claim");
+                
+            case "claim_chunks_count":
+                chunk = player.getLocation().getChunk();
+                if (instance.getMain().checkIfClaimExists(chunk)) {
+                	Claim claim = instance.getMain().getClaim(chunk);
+                    return String.valueOf(claim.getChunks().size());
+                }
+                return instance.getLanguage().getMessage("claim_chunks_count-if-no-claim");
                 
             case "claim_members_online":
                 chunk = player.getLocation().getChunk();

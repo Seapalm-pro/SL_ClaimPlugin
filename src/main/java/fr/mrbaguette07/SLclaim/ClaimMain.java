@@ -2854,6 +2854,12 @@ public class ClaimMain {
                     preparedStatement.setString(2, uuid);
                     preparedStatement.setString(3, claim.getName());
                     preparedStatement.executeUpdate();
+
+                    UUID ownerUUID = owner.equals("*") ? SERVER_UUID : instance.getPlayerMain().getPlayerUUID(owner);
+                    if (instance.getMultiServerManager() != null && instance.getMultiServerManager().isEnabled()) {
+                        instance.getMultiServerManager().broadcastClaimUpdate(claim, ownerUUID);
+                    }
+                    
                     return true;
                 } catch (SQLException e) {
                     e.printStackTrace();
@@ -2915,6 +2921,12 @@ public class ClaimMain {
                     preparedStatement.setString(2, uuid);
                     preparedStatement.setString(3, claim.getName());
                     preparedStatement.executeUpdate();
+
+                    UUID ownerUUID = owner.equals("*") ? SERVER_UUID : instance.getPlayerMain().getPlayerUUID(owner);
+                    if (instance.getMultiServerManager() != null && instance.getMultiServerManager().isEnabled()) {
+                        instance.getMultiServerManager().broadcastSettingUpdate(claim, ownerUUID, permission, roleKey, value);
+                    }
+                    
                     return true;
                 } catch (SQLException e) {
                     e.printStackTrace();
@@ -2965,6 +2977,13 @@ public class ClaimMain {
 	                    preparedStatement.setString(2, uuid.toString());
 	                    preparedStatement.executeUpdate();
 	                }
+
+	                if (instance.getMultiServerManager() != null && instance.getMultiServerManager().isEnabled()) {
+	                    for (Claim c : playerClaims.computeIfAbsent(uuid, k -> new CustomSet<>())) {
+	                        instance.getMultiServerManager().broadcastClaimUpdate(c, uuid);
+	                    }
+	                }
+	                
 	                return true;
 	            } catch (SQLException e) {
 	                e.printStackTrace();
@@ -3008,6 +3027,11 @@ public class ClaimMain {
 	                    preparedStatement.setString(4, claimName);
 	                    preparedStatement.executeUpdate();
 	                }
+
+	                if (instance.getMultiServerManager() != null && instance.getMultiServerManager().isEnabled()) {
+	                    instance.getMultiServerManager().broadcastClaimUpdate(claim, uuid);
+	                }
+	                
 	                return true;
 	            } catch (SQLException e) {
 	                e.printStackTrace();
@@ -3048,6 +3072,11 @@ public class ClaimMain {
 	                    preparedStatement.setString(3, claimName);
 	                    preparedStatement.executeUpdate();
 	                }
+
+	                if (instance.getMultiServerManager() != null && instance.getMultiServerManager().isEnabled()) {
+	                    instance.getMultiServerManager().broadcastClaimUpdate(claim, uuid);
+	                }
+	                
 	                return true;
 	            } catch (SQLException e) {
 	                e.printStackTrace();
@@ -3095,6 +3124,13 @@ public class ClaimMain {
 	                    }
 	                    preparedStatement.executeBatch();
 	                }
+
+	                if (instance.getMultiServerManager() != null && instance.getMultiServerManager().isEnabled()) {
+	                    for (Claim claim : playerClaims.computeIfAbsent(uuid, k -> new CustomSet<>())) {
+	                        instance.getMultiServerManager().broadcastClaimUpdate(claim, uuid);
+	                    }
+	                }
+	                
 	                return true;
 	            } catch (SQLException e) {
 	                e.printStackTrace();
@@ -3137,6 +3173,13 @@ public class ClaimMain {
 	                    }
 	                    preparedStatement.executeBatch();
 	                }
+
+	                if (instance.getMultiServerManager() != null && instance.getMultiServerManager().isEnabled()) {
+	                    for (Claim claim : playerClaims.computeIfAbsent(uuid, k -> new CustomSet<>())) {
+	                        instance.getMultiServerManager().broadcastClaimUpdate(claim, uuid);
+	                    }
+	                }
+	                
 	                return true;
 	            } catch (SQLException e) {
 	                e.printStackTrace();
@@ -3177,6 +3220,11 @@ public class ClaimMain {
 	                    preparedStatement.setString(3, claim.getName());
 	                    preparedStatement.executeUpdate();
 	                }
+
+	                if (instance.getMultiServerManager() != null && instance.getMultiServerManager().isEnabled()) {
+	                    instance.getMultiServerManager().broadcastMemberAdd(claim, uuid, targetUUID);
+	                }
+	                
 	                return true;
 	            } catch (SQLException e) {
 	                e.printStackTrace();
@@ -3220,6 +3268,13 @@ public class ClaimMain {
 	                    }
 	                    preparedStatement.executeBatch();
 	                }
+
+	                if (instance.getMultiServerManager() != null && instance.getMultiServerManager().isEnabled()) {
+	                    for (Claim claim : playerClaims.computeIfAbsent(uuid, k -> new CustomSet<>())) {
+	                        instance.getMultiServerManager().broadcastMemberAdd(claim, uuid, targetUUID);
+	                    }
+	                }
+	                
 	                return true;
 	            } catch (SQLException e) {
 	                e.printStackTrace();
@@ -3245,8 +3300,7 @@ public class ClaimMain {
             	// Get data
             	UUID uuid = claim.getUUID();
             	UUID targetUUID = instance.getPlayerMain().getPlayerUUID(name);
-            	
-	        	// Add member
+
 	            claim.removeMember(targetUUID);
 	            
 	            // Update database
@@ -3259,6 +3313,10 @@ public class ClaimMain {
 	                    preparedStatement.setString(3, claim.getName());
 	                    preparedStatement.executeUpdate();
 	                }
+	                if (instance.getMultiServerManager() != null && instance.getMultiServerManager().isEnabled()) {
+	                    instance.getMultiServerManager().broadcastMemberRemove(claim, uuid, targetUUID);
+	                }
+	                
 	                return true;
 	            } catch (SQLException e) {
 	                e.printStackTrace();
@@ -3300,6 +3358,13 @@ public class ClaimMain {
 	                    }
 	                    preparedStatement.executeBatch();
 	                }
+
+	                if (instance.getMultiServerManager() != null && instance.getMultiServerManager().isEnabled()) {
+	                    for (Claim claim : playerClaims.computeIfAbsent(uuid, k -> new CustomSet<>())) {
+	                        instance.getMultiServerManager().broadcastMemberRemove(claim, uuid, targetUUID);
+	                    }
+	                }
+	                
 	                return true;
 	            } catch (SQLException e) {
 	                e.printStackTrace();
@@ -3343,6 +3408,11 @@ public class ClaimMain {
 	                    preparedStatement.setString(3, old_name);
 	                    preparedStatement.executeUpdate();
 	                }
+
+	                if (instance.getMultiServerManager() != null && instance.getMultiServerManager().isEnabled()) {
+	                    instance.getMultiServerManager().broadcastClaimUpdate(claim, uuid);
+	                }
+	                
 	                return true;
 	            } catch (SQLException e) {
 	                e.printStackTrace();
@@ -3380,6 +3450,11 @@ public class ClaimMain {
 	                    preparedStatement.setString(3, claim.getName());
 	                    preparedStatement.executeUpdate();
 	                }
+
+	                if (instance.getMultiServerManager() != null && instance.getMultiServerManager().isEnabled()) {
+	                    instance.getMultiServerManager().broadcastClaimUpdate(claim, uuid);
+	                }
+	                
 	                return true;
 	            } catch (SQLException e) {
 	                e.printStackTrace();
@@ -3540,6 +3615,11 @@ public class ClaimMain {
 	                    preparedStatement.setString(3, claim.getName());
 	                    preparedStatement.executeUpdate();
 	                }
+
+	                if (instance.getMultiServerManager() != null && instance.getMultiServerManager().isEnabled()) {
+	                    instance.getMultiServerManager().broadcastClaimUpdate(claim, uuid);
+	                }
+	                
 	                return true;
 	            } catch (SQLException e) {
 	                e.printStackTrace();
@@ -3578,6 +3658,11 @@ public class ClaimMain {
 	                    preparedStatement.setString(3, claim.getName());
 	                    preparedStatement.executeUpdate();
 	                }
+
+	                if (instance.getMultiServerManager() != null && instance.getMultiServerManager().isEnabled()) {
+	                    instance.getMultiServerManager().broadcastClaimUpdate(claim, uuid);
+	                }
+	                
 	                return true;
 	            } catch (SQLException e) {
 	                e.printStackTrace();
@@ -3614,6 +3699,11 @@ public class ClaimMain {
 	                    preparedStatement.setString(2, claim.getName());
 	                    preparedStatement.executeUpdate();
 	                }
+
+	                if (instance.getMultiServerManager() != null && instance.getMultiServerManager().isEnabled()) {
+	                    instance.getMultiServerManager().broadcastClaimUpdate(claim, uuid);
+	                }
+	                
 	                return true;
 	            } catch (SQLException e) {
 	                e.printStackTrace();
@@ -3699,6 +3789,11 @@ public class ClaimMain {
 	                    preparedStatement.setString(3, claim.getName());
 	                    preparedStatement.executeUpdate();
 	                }
+
+	                if (instance.getMultiServerManager() != null && instance.getMultiServerManager().isEnabled()) {
+	                    instance.getMultiServerManager().broadcastClaimUpdate(claim, uuid);
+	                }
+	                
 	                return true;
 	            } catch (SQLException e) {
 	                e.printStackTrace();
