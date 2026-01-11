@@ -662,8 +662,8 @@ help-command:
     §bSyntaxe : §f/claim sell <claim-name> <price>
     §bDescription : §fMettre un claim en vente
   claim-cancel: |
-    §bSyntaxe : §f/claim cancel <claim-name>
-    §bDescription : §fAnnuler la vente du claim donné
+    §bSyntaxe : §f/claim cancel
+    §bDescription : §fAnnuler la vente du claim (doit être utilisé dans le claim)
   claim-kick: |
     §bSyntaxe : §f/claim kick [<*|claim-name>] <player>
     §bDescription : §fExpulser physiquement un joueur d'un claim

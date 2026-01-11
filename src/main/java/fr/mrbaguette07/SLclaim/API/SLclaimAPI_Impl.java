@@ -62,7 +62,7 @@ public class SLclaimAPI_Impl implements SLclaimAPI {
 
 	@Override
 	public Claim getPlayerClaim(Player player, String claimName) {
-		return instance.getMain().getClaimByName(claimName, player);
+		return instance.getMain().getClaimByName(claimName, player.getName());
 	}
 	
 	@Override

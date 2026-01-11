@@ -790,8 +790,8 @@ help-command:
     §bSyntax : §f/claim sell <claim-name> <price>
     §bDescription : §fPut a claim in sale
   claim-cancel: |
-    §bSyntax : §f/claim cancel <claim-name>
-    §bDescription : §fCancel a sale of the given claim
+    §bSyntax : §f/claim cancel
+    §bDescription : §fCancel a claim sale (must be used inside the claim)
   claim-kick: |
     §bSyntax : §f/claim kick [<*|claim-name>] <player>
     §bDescription : §fKick a player physically from a claim
